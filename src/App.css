@@ -1,0 +1,47 @@
+a {
+  text-decoration: none;
+}
+
+.main-body {
+  min-height: 75vh;
+}
+
+.profile-pic {
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  vertical-align: middle;
+  text-align: center;
+  color: transparent;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.profile-pic:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.profile-pic span {
+  display: inline-block;
+  padding-top: 4.5em;
+  padding-bottom: 4.5em;
+}
+
+form input[type="file"] {
+  display: none;
+  cursor: pointer;
+}
+
+.svg404 {
+  padding: 10vh 20vw;
+  align-self: center;
+  max-width: 100vw;
+}

@@ -16,26 +16,63 @@ import ForgetPassword from "../Components/auth/ForgetPassword";
 import ForgetPasswordTokenConfirm from "../Components/auth/ForgetPasswordTokenConfirm";
 import RegisterTokenConfirm from "../Components/auth/RegisterTokenConfirm";
 import NotFound from "../Components/common/NotFound";
+import Items from "../Components/inventory/Items";
+import Transactions from "../Components/transactions/Tranasactions";
+import SideNav from "../Components/common/SideNav";
+import ItemCreate from "../Components/inventory/ItemCreate";
+import AddTransaction from "../Components/transactions/AddTransaction";
+import HeroMenu from "../Components/common/HeroMenu";
 
 const Routes = ({ isAuthenticated }) => {
   return (
     <Router>
-      <Header />
+      {isAuthenticated ? "" : <Header />}
       <div className="main-body">
         <Switch>
+          {isAuthenticated ? (
+            <>
+              <SideNav />
+              <section className="home-section">
+                <HeroMenu />
+                <PrivateRoute exact path="/profile" component={MyAccount} />
+                <PrivateRoute exact path="/inventory" component={Items} />
+                <PrivateRoute
+                  exact
+                  path="/transactions"
+                  component={Transactions}
+                />
+                <PrivateRoute
+                  path="/transactions/sell-stock"
+                  component={AddTransaction}
+                />
+                <PrivateRoute
+                  path="/transactions/add-stock"
+                  component={AddTransaction}
+                />
+                <PrivateRoute path="/inventory/new" component={ItemCreate} />
+                <PrivateRoute
+                  exact
+                  path="/change-password"
+                  component={ChangePassword}
+                />
+                <Route exact path="/logout" component={Logout} />
+              </section>
+            </>
+          ) : (
+            ""
+          )}
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
 
           <Route exact path="/">
-            {isAuthenticated ? <Redirect to="/" /> : <Redirect to="/login" />}
+            {isAuthenticated ? (
+              <Redirect to="/dashboard" />
+            ) : (
+              <Redirect to="/login" />
+            )}
           </Route>
-          <PrivateRoute exact path="/profile" component={MyAccount} />
-          <PrivateRoute
-            exact
-            path="/change-password"
-            component={ChangePassword}
-          />
+
           <Route exact path="/forget-password" component={ForgetPassword} />
           <Route
             exact
@@ -45,8 +82,8 @@ const Routes = ({ isAuthenticated }) => {
           <Route exact path="/activate" component={RegisterTokenConfirm} />
           <Route component={NotFound} />
         </Switch>
+        {/* <Footer /> */}
       </div>
-      <Footer />
     </Router>
   );
 };

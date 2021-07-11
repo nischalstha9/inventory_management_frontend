@@ -53,7 +53,7 @@ export default function ChangePassword() {
   const classes = useStyles();
   const [processing, setProcessing] = useState(false);
   const passwordChangeForm = useFormik({
-    initialValues: { old_password: "", new_password1: "", new_password2: "" },
+    initialValues: { old_password:"", new_password1:"", new_password2:"" },
     onSubmit: (values) => {
       setProcessing(true);
       AxiosInstance.post(`auth/user/password/change/`, values, {

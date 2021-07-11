@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import isAuthenticatedReducer from "./isAuthenticated";
-import accessTokenReducer from "./accessToken";
+// import accessTokenReducer from "./accessToken";
 import userInfoReducer from "./userInfo";
 // import alertsReducer from "./alerts";
 

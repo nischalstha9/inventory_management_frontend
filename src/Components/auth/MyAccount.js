@@ -234,7 +234,7 @@ const MyAccount = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            {user.role !== 0 ? (
+            {user.role === 2 ? (
               <Grid spacing={6}>
                 <br />
                 <TextField

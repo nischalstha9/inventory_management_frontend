@@ -104,61 +104,6 @@ const useStyles = makeStyles((theme) => ({
 export default function PrimarySearchAppBar() {
   const user = useSelector((state) => state.user);
   const authenticated = useSelector((state) => state.authenticated);
-  const [state, setState] = React.useState({
-    left: false,
-  });
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setState({ ...state, [anchor]: open });
-  };
-
-  const list = (anchor) => (
-    <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === "top" || anchor === "bottom",
-      })}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <Avatar src={user.avatar_path} />
-            <h4>{user.email}</h4>
-          </ListItemIcon>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <h6>My Account Books</h6>
-          </ListItemIcon>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemIcon>
-            <LibraryBooksIcon />
-          </ListItemIcon>
-          <ListItemText primary="YOUR ITEM TEXT" />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemIcon>
-            <h6>Manage My Books</h6>
-          </ListItemIcon>
-        </ListItem>
-        <Divider />
-      </List>
-    </div>
-  );
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -196,26 +141,10 @@ export default function PrimarySearchAppBar() {
     ""
   );
 
-  let anchor = "left";
-
   return (
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          {authenticated ? (
-            <Button onClick={toggleDrawer(anchor, true)}>
-              <MenuIcon />
-            </Button>
-          ) : (
-            ""
-          )}
-          <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-          >
-            {list(anchor)}
-          </Drawer>
           <Typography
             className={classes.title}
             variant="h6"

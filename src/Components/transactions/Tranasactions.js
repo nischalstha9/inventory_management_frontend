@@ -15,6 +15,7 @@ import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import { Chip } from "@material-ui/core";
+import ProductInfoDialog from "../common/ProductInfoDialog";
 
 const BalancedChip = withStyles({
   root: {
@@ -46,7 +47,8 @@ const AddPaymentBtn = withStyles({
 })(Button);
 const ViewEditButton = withStyles({
   root: {
-    background: "#21bcbc",
+    background: "#3cafaf",
+    color: "white",
     width: "100%",
     margin: "1px",
   },
@@ -105,7 +107,7 @@ export default function StickyHeadTable() {
       }
       setFilterForm({
         ...filterForm,
-        [e.target.name]: "",
+        [e.target.name]: date,
       });
     } else {
       setFilterForm({
@@ -293,10 +295,15 @@ export default function StickyHeadTable() {
                     <TableCell>{trans.date_of_trans}</TableCell>
                     <TableCell>{trans.id}</TableCell>
                     <TableCell>{trans.vendor_client}</TableCell>
-                    <TableCell>{trans.item_name}</TableCell>
+                    <TableCell>
+                      <ProductInfoDialog
+                        itemName={trans.item_name}
+                        itemId={trans.item}
+                      />
+                    </TableCell>
                     <TableCell>{trans._type}</TableCell>
                     <TableCell>{trans.quantity}</TableCell>
-                    <TableCell>{trans.cost}</TableCell>
+                    <TableCell>Rs. {trans.cost}</TableCell>
                     <TableCell>Rs. {trans.total_payable}</TableCell>
                     <TableCell>Rs. {trans.total_paid}</TableCell>
                     <TableCell>

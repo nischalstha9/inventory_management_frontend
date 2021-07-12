@@ -301,3 +301,8 @@ form input[type="file"] {
 }
 
 /* SIDENAV CSSS END */
+
+.itemName {
+  cursor: pointer;
+  color: rgb(46, 124, 214);
+}

@@ -13,7 +13,7 @@ import ProductTransactions from "../common/ProductTransactions";
 import { yellow, red } from "@material-ui/core/colors";
 import { Alert } from "@material-ui/lab";
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: "10px",
     width: "100%",

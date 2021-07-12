@@ -227,7 +227,7 @@ form input[type="file"] {
   height: 60px;
   width: 78px;
   left: 0;
-  bottom: -8px;
+  bottom: 5px;
   padding: 10px 14px;
   background: #1d1b31;
   transition: all 0.5s ease;

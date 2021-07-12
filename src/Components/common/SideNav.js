@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const changeMenuBtn = () => {
   let sidebar = document.querySelector(".sidebar");
@@ -13,14 +14,21 @@ function menuBtnChange() {
   let closeBtn = document.querySelector("#btn");
   if (sidebar.classList.contains("open")) {
     closeBtn.classList.replace("bx-menu", "bx-menu-alt-right"); //replacing the iocns className
+    localStorage.setItem("sidebar_toggle", true);
   } else {
     closeBtn.classList.replace("bx-menu-alt-right", "bx-menu"); //replacing the iocns className
+    localStorage.setItem("sidebar_toggle", false);
   }
 }
 
 const SideNav = () => {
+  const user = useSelector((state) => state.user);
+  let savedSidebarToggleStatus = localStorage.getItem("sidebar_toggle");
+  let sidebar_classes =
+    savedSidebarToggleStatus === "true" ? "sidebar open" : "sidebar";
+
   return (
-    <div className="sidebar">
+    <div className={sidebar_classes}>
       <ul className="nav-list">
         <div className="logo-details">
           <i className="bx bxl-c-plus-plus icon"></i>
@@ -92,7 +100,11 @@ const SideNav = () => {
           <div className="profile-details">
             {/* <img src="profile.jpg" alt="profileImg"> */}
             <div className="name_job">
-              <div className="name">Prem Shahi</div>
+              <div className="name">
+                {user.first_name !== ""
+                  ? `${user.first_name} ${user.last_name}`
+                  : user.email}
+              </div>
               <div className="job">Web designer</div>
             </div>
           </div>

@@ -105,20 +105,17 @@ export default function AddTransaction() {
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
 
   useEffect(() => {
-    AxiosInstance.get(`inventory/${shop_slug}/item/`)
+    let url = `inventory/${shop_slug}/item/`;
+    if (mode === "STOCK_OUT") {
+      url += `?quantity__gt=0`;
+    }
+    AxiosInstance.get(url)
       .then((resp) => {
         setItems(resp.data);
       })
       .catch((err) => console.log(err.resp));
   }, []);
 
-  const retrieveItemDetail = (pk) => {
-    AxiosInstance(`/inventory/${shop_slug}/item/${pk}/`)
-      .then((resp) => {
-        setChooseItem(resp.data);
-      })
-      .catch((err) => console.log(err.resp));
-  };
   let initialFormVal = {
     _type: mode,
     vendor_client: "",
@@ -133,6 +130,14 @@ export default function AddTransaction() {
   if (mode === "STOCK_IN") {
     initialFormVal.selling_price = 0;
   }
+  const retrieveItemDetail = (pk) => {
+    AxiosInstance(`/inventory/${shop_slug}/item/${pk}/`)
+      .then((resp) => {
+        setChooseItem(resp.data);
+        formik.setFieldValue("cost", resp.data.selling_price);
+      })
+      .catch((err) => console.log(err.resp));
+  };
 
   const formik = useFormik({
     initialValues: initialFormVal,
@@ -185,18 +190,15 @@ export default function AddTransaction() {
                 </div>
                 <hr />
                 <div className={classes.StockInTransTable}>
-                  <div className={classes.productInfo}>
-                    <h3>Stock In Transaction</h3>
-                  </div>
+                  <h4>Stock In Unpaid Transaction</h4>
                   <hr />
                   <ProductTransactions
                     transactions={chooseItem.transactions.stock_in}
                     type="STOCK_IN"
                   />
                 </div>
-                <hr />
                 <div className={classes.StockOutTransTable}>
-                  <h3>Stock Out Transaction</h3>
+                  <h4>Stock Out Unpaid Transaction</h4>
                   <hr />
                   <ProductTransactions
                     transactions={chooseItem.transactions.stock_out}
@@ -205,7 +207,6 @@ export default function AddTransaction() {
                 </div>
               </>
             )}
-            <hr />
           </div>
           <div className={classes.formSection}>
             <form className={classes.form} onSubmit={formik.handleSubmit}>

@@ -66,8 +66,8 @@ const ProductTransactions = ({ transactions, type }) => {
                     <TableCell>{trans.date_of_trans}</TableCell>
                     <TableCell>{trans.vendor_client}</TableCell>
                     <TableCell>{trans.quantity}</TableCell>
-                    <TableCell>{trans.total_payable}</TableCell>
-                    <TableCell>{trans.total_paid}</TableCell>
+                    <TableCell>Rs. {trans.total_payable}</TableCell>
+                    <TableCell>Rs. {trans.total_paid}</TableCell>
                     <TableCell>
                       <PayButton variant="outlined">
                         Pay {trans.total_payable - trans.total_paid}
@@ -78,7 +78,7 @@ const ProductTransactions = ({ transactions, type }) => {
               })
             ) : (
               <TableRow hover role="checkbox" tabIndex={-1}>
-                No transactions!
+                No unbalanced transactions!
               </TableRow>
             )}
           </TableBody>

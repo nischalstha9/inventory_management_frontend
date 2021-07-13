@@ -112,8 +112,8 @@ export default function StickyHeadTable() {
                       </TableCell>
                       <TableCell>{item.brand}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.cost_price}</TableCell>
-                      <TableCell>{item.selling_price}</TableCell>
+                      <TableCell>Rs. {item.cost_price}</TableCell>
+                      <TableCell>Rs. {item.selling_price}</TableCell>
                       <TableCell>
                         <Button
                           color="primary"

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,49 +14,14 @@ import { Button, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
-import { Chip } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
-const BalancedChip = withStyles({
-  root: {
-    background: "#3bb771",
-    color: "white",
-  },
-  label: {
-    textTransform: "capitalize",
-  },
-})(Chip);
-const UnBalancedChip = withStyles({
-  root: {
-    background: "#b73b3b",
-    color: "white",
-  },
-  label: {
-    textTransform: "capitalize",
-  },
-})(Chip);
-const AddPaymentBtn = withStyles({
-  root: {
-    background: "#ffc743",
-    width: "100%",
-    margin: "1px",
-  },
-  label: {
-    textTransform: "capitalize",
-  },
-})(Button);
-const ViewEditButton = withStyles({
-  root: {
-    background: "#3cafaf",
-    color: "white",
-    width: "100%",
-    margin: "1px",
-  },
-  label: {
-    textTransform: "capitalize",
-  },
-})(Button);
+import {
+  BalancedChip,
+  AddPaymentBtn,
+  ViewEditButton,
+} from "../transactions/Tranasactions";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -120,7 +85,7 @@ export default function StickyHeadTable() {
   };
 
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
-  var url = `/transactions/${shop_slug}/transaction/?limit=${rowsPerPage}&offset=${
+  var url = `/transactions/${shop_slug}/payment/?limit=${rowsPerPage}&offset=${
     page * rowsPerPage
   }&search=${filterForm.search}&_type=${filterForm.type}&balanced=${
     filterForm.balanced
@@ -282,7 +247,8 @@ export default function StickyHeadTable() {
                 <TableCell>Transaction Id</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Vendor/Client</TableCell>
-                <TableCell>Transaction</TableCell>
+                <TableCell>Item</TableCell>
+                <TableCell>Quantity</TableCell>
                 <TableCell>Total Paid</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -295,47 +261,41 @@ export default function StickyHeadTable() {
                   </TableCell>
                 </TableRow>
               ) : (
-                rows.map((trans) => {
-                  let balanced = trans.total_payable - trans.total_paid === 0;
+                rows.map((payment) => {
+                  let balanced =
+                    payment.transaction_detail.total_paid ===
+                    payment.transaction_detail.total_payable;
                   return (
-                    <TableRow hover tabIndex={-1} key={trans.id}>
-                      <TableCell>{trans.date_of_trans}</TableCell>
-                      <TableCell>{trans.id}</TableCell>
-                      <TableCell>{trans.vendor_client}</TableCell>
+                    <TableRow hover tabIndex={-1} key={payment.id}>
+                      <TableCell>
+                        {payment.transaction_detail.date_of_trans}
+                      </TableCell>
+                      <TableCell>{payment.id}</TableCell>
+                      <TableCell>{payment.transaction_detail._type}</TableCell>
+                      <TableCell>
+                        {payment.transaction_detail.vendor_client}
+                      </TableCell>
                       <TableCell>
                         <ProductInfoDialog
-                          itemName={trans.item_name}
-                          itemId={trans.item}
+                          itemName={payment.transaction_detail.item_name}
+                          itemId={payment.transaction_detail.item}
                         />
                       </TableCell>
-                      <TableCell>{trans._type}</TableCell>
-                      <TableCell>{trans.quantity}</TableCell>
-                      <TableCell>Rs. {trans.cost}</TableCell>
-                      <TableCell>Rs. {trans.total_payable}</TableCell>
-                      <TableCell>Rs. {trans.total_paid}</TableCell>
                       <TableCell>
-                        {balanced ? (
-                          <BalancedChip label="Balanced" />
-                        ) : (
-                          <UnBalancedChip
-                            label={`Rs. ${
-                              trans.total_payable - trans.total_paid
-                            }`}
-                          />
-                        )}
+                        {payment.transaction_detail.quantity}
+                      </TableCell>
+                      <TableCell>
+                        Rs. {payment.transaction_detail.total_paid}
                       </TableCell>
                       <TableCell>
                         <Grid>
-                          {balanced ? (
-                            ""
-                          ) : (
-                            <Grid>
-                              <AddPaymentBtn>Add Pament</AddPaymentBtn>
-                            </Grid>
-                          )}
-
                           <Grid>
-                            <ViewEditButton>View/Edit</ViewEditButton>
+                            <ViewEditButton
+                              component={Link}
+                              to={`transactions/${payment.transaction_detail.id}/update`}
+                            >
+                              View/Edit{balanced ? "" : "/Pay"}
+                            </ViewEditButton>
                           </Grid>
                         </Grid>
                       </TableCell>

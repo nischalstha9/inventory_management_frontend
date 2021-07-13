@@ -39,9 +39,7 @@ const ProductTransactions = ({ transactions, type }) => {
       width: "100%",
       padding: "10px",
     },
-    container: {
-      maxHeight: 440,
-    },
+    container: {},
   }));
   const classes = useStyles();
   return (

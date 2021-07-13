@@ -17,26 +17,29 @@ import { Grid } from "@material-ui/core";
 import { Chip } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Link } from "react-router-dom";
 
-const BalancedChip = withStyles({
+export const BalancedChip = withStyles({
   root: {
     background: "#3bb771",
     color: "white",
+    width: "100%",
   },
   label: {
     textTransform: "capitalize",
   },
 })(Chip);
-const UnBalancedChip = withStyles({
+export const UnBalancedChip = withStyles({
   root: {
     background: "#b73b3b",
     color: "white",
+    width: "100%",
   },
   label: {
     textTransform: "capitalize",
   },
 })(Chip);
-const AddPaymentBtn = withStyles({
+export const AddPaymentBtn = withStyles({
   root: {
     background: "#ffc743",
     width: "100%",
@@ -46,7 +49,7 @@ const AddPaymentBtn = withStyles({
     textTransform: "capitalize",
   },
 })(Button);
-const ViewEditButton = withStyles({
+export const ViewEditButton = withStyles({
   root: {
     background: "#3cafaf",
     color: "white",
@@ -330,16 +333,13 @@ export default function StickyHeadTable() {
                       </TableCell>
                       <TableCell>
                         <Grid>
-                          {balanced ? (
-                            ""
-                          ) : (
-                            <Grid>
-                              <AddPaymentBtn>Add Pament</AddPaymentBtn>
-                            </Grid>
-                          )}
-
                           <Grid>
-                            <ViewEditButton>View/Edit</ViewEditButton>
+                            <ViewEditButton
+                              component={Link}
+                              to={`transactions/${trans.id}/update`}
+                            >
+                              View/Edit{balanced ? "" : "/Pay"}
+                            </ViewEditButton>
                           </Grid>
                         </Grid>
                       </TableCell>

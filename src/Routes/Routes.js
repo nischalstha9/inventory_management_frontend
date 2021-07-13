@@ -23,6 +23,7 @@ import SideNav from "../Components/common/SideNav";
 import ItemCreate from "../Components/inventory/ItemCreate";
 import ItemCreateUpdate from "../Components/inventory/ItemCreateUpdate";
 import AddTransaction from "../Components/transactions/AddTransaction";
+import UpdateTransaction from "../Components/transactions/UpdateTransaction";
 import HeroMenu from "../Components/common/HeroMenu";
 
 const Routes = ({ isAuthenticated }) => {
@@ -42,6 +43,11 @@ const Routes = ({ isAuthenticated }) => {
                   exact
                   path="/transactions"
                   component={Transactions}
+                />
+                <PrivateRoute
+                  exact
+                  path="/transactions/:trans_id/update"
+                  component={UpdateTransaction}
                 />
                 <PrivateRoute exact path="/payments" component={Payments} />
                 <PrivateRoute

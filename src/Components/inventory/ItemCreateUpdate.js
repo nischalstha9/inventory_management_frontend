@@ -138,7 +138,6 @@ const ItemCreate = ({ mode }) => {
     brand: "",
     description: "",
     cost_price: 0.0,
-    quantity: 0,
     selling_price: 0.0,
     about_seller: "",
     category: 0,
@@ -238,17 +237,6 @@ const ItemCreate = ({ mode }) => {
                 id="cost_price"
                 onChange={formik.handleChange}
                 value={formik.values.cost_price}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="quantity"
-                label="Quantity"
-                type="textarea"
-                id="quantity"
-                onChange={formik.handleChange}
-                value={formik.values.quantity}
               />
               <TextField
                 variant="outlined"

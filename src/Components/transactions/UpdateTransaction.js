@@ -6,12 +6,13 @@ import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
 import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
-import { MenuItem } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
-import ProductInfo from "../common/ProductInfo";
-import ProductTransactions from "../common/ProductTransactions";
+import TransactionInfoCard from "../common/TransactionInfoCard";
+import CreatePayment from "../common/CreatePayment";
+import PaymentTable from "../common/PaymentTable";
 import { yellow, red } from "@material-ui/core/colors";
 import { Alert } from "@material-ui/lab";
+import { useParams } from "react-router-dom";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   infoSection: {
     width: "50%",
-    height: "100vh",
+    minHeight: "100vh",
     padding: "5px",
   },
   formSection: {
@@ -89,77 +90,56 @@ export const useStyles = makeStyles((theme) => ({
 
 export default function AddTransaction() {
   const classes = useStyles();
-  const [items, setItems] = useState([]);
   const [chooseItem, setChooseItem] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alerts, setAlerts] = useState([]);
-
-  const mode =
-    window.location.pathname === "/transactions/add-stock"
-      ? "STOCK_IN"
-      : "STOCK_OUT";
-
-  const title = mode === "STOCK_IN" ? "Add Stock" : "Sell Stock";
+  const [title, setTitle] = useState("Update Transaction");
+  const [refresher, setRefresher] = useState(0);
 
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
+  const { trans_id } = useParams();
 
   useEffect(() => {
-    let url = `inventory/${shop_slug}/item/`;
-    if (mode === "STOCK_OUT") {
-      url += `?quantity__gt=0`;
-    }
+    setLoading(true);
+    let url = `transactions/${shop_slug}/transaction/${trans_id}/`;
     AxiosInstance.get(url)
       .then((resp) => {
-        setItems(resp.data);
-      })
-      .catch((err) => console.log(err.resp));
-  }, []);
-
-  let initialFormVal = {
-    _type: mode,
-    vendor_client: "",
-    item: 0,
-    quantity: 0,
-    cost: 0.0,
-    paid: 0.0,
-    remarks: "",
-    contact: 0,
-  };
-
-  if (mode === "STOCK_IN") {
-    initialFormVal.selling_price = 0;
-  }
-  const retrieveItemDetail = (pk) => {
-    setLoading(true);
-    AxiosInstance(`/inventory/${shop_slug}/item/${pk}/?show_transactions=true`)
-      .then((resp) => {
+        setTitle(
+          `Update Transaction | ${resp.data.quantity} of ${resp.data.item_name}`
+        );
         setChooseItem(resp.data);
-        formik.setFieldValue("cost", resp.data.selling_price);
+        formik.setFieldValue("contact", resp.data.contact);
+        formik.setFieldValue("remarks", resp.data.remarks);
       })
       .catch((err) => console.log(err.resp));
     setLoading(false);
+  }, [refresher]);
+
+  let initialFormVal = {
+    remarks: "",
+    contact: 0,
   };
 
   const formik = useFormik({
     initialValues: initialFormVal,
     onSubmit: (values) => {
       setProcessing(true);
-      const url = `transactions/${shop_slug}/transaction/`;
-      AxiosInstance.post(url, values, {
+      const url = `transactions/${shop_slug}/transaction/${trans_id}/`;
+      AxiosInstance.patch(url, values, {
         withCredentials: true,
       })
         .then((resp) => {
           setSuccess(true);
-          formik.resetForm();
           // let msg = Object.entries(resp.data)[0][1];
           setAlerts([
             {
-              message: "Transaction Creation Success!",
+              message: "Transaction Updated Successfully!",
               type: "success",
             },
           ]);
+          setChooseItem({ contact: resp.data.contact, ...chooseItem });
         })
         .catch((err) => {
           setSuccess(false);
@@ -191,99 +171,33 @@ export default function AddTransaction() {
             ) : (
               <>
                 <div className={classes.productInfo}>
-                  <ProductInfo item={chooseItem} />
+                  <TransactionInfoCard transaction={chooseItem} />
                 </div>
                 <hr />
-                <div className={classes.StockInTransTable}>
-                  <h4>Stock In Unpaid Transaction</h4>
-                  <hr />
-                  <ProductTransactions
-                    transactions={chooseItem.transactions.stock_in}
-                    type="STOCK_IN"
+                <div className={classes.productInfo}>
+                  <h4>Payment Table:</h4>
+                  <PaymentTable
+                    payments={chooseItem.payments}
+                    totalPaid={chooseItem.total_paid}
+                    remainingAmount={chooseItem.remaining_payment}
                   />
+                  {chooseItem.remaining_payment !== 0 ? (
+                    <CreatePayment
+                      refreshTransactionData={() => {
+                        setRefresher(refresher + 1);
+                      }}
+                      transactionId={chooseItem.id}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
-                <div className={classes.StockOutTransTable}>
-                  <h4>Stock Out Unpaid Transaction</h4>
-                  <hr />
-                  <ProductTransactions
-                    transactions={chooseItem.transactions.stock_out}
-                    type="STOCK_OUT"
-                  />
-                </div>
+                <hr />
               </>
             )}
           </div>
           <div className={classes.formSection}>
             <form className={classes.form} onSubmit={formik.handleSubmit}>
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="item"
-                name="item"
-                select
-                onChange={(e) => {
-                  retrieveItemDetail(e.target.value);
-                  formik.handleChange(e);
-                }}
-                value={formik.values.item}
-                label="Product"
-              >
-                {items.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="vendor_client"
-                name="vendor_client"
-                onChange={formik.handleChange}
-                value={formik.values.vendor_client}
-                label={mode === "STOCK_IN" ? "Vendor" : "Client"}
-              />
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="quantity"
-                name="quantity"
-                onChange={formik.handleChange}
-                value={formik.values.quantity}
-                label="Quantity"
-              />
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="cost"
-                name="cost"
-                onChange={formik.handleChange}
-                value={formik.values.cost}
-                label="Cost Price"
-              />
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="paid"
-                name="paid"
-                onChange={formik.handleChange}
-                value={formik.values.paid}
-                label="Paid Amount"
-              />
               <TextField
                 autoFocus
                 variant="outlined"
@@ -308,22 +222,6 @@ export default function AddTransaction() {
                 value={formik.values.contact}
                 label="Contact"
               />
-              {mode === "STOCK_IN" ? (
-                <TextField
-                  autoFocus
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="selling_price"
-                  name="selling_price"
-                  onChange={formik.handleChange}
-                  value={formik.values.selling_price}
-                  label="Selling Price"
-                />
-              ) : (
-                ""
-              )}
               <div className={classes.buttonWrapper}>
                 <Button
                   type="submit"
@@ -333,9 +231,7 @@ export default function AddTransaction() {
                   disabled={processing}
                   className={classes.submit}
                 >
-                  {mode === "STOCK_IN"
-                    ? "Add to inventory"
-                    : "Sell from inventory"}
+                  Update Transaction
                 </Button>
                 {processing && (
                   <CircularProgress

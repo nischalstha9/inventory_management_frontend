@@ -279,15 +279,11 @@ export default function StickyHeadTable() {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Id</TableCell>
-                <TableCell>Vendor/Client</TableCell>
-                <TableCell>Item</TableCell>
+                <TableCell>Transaction Id</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Price Per Unit</TableCell>
-                <TableCell>Total Payable</TableCell>
+                <TableCell>Vendor/Client</TableCell>
+                <TableCell>Transaction</TableCell>
                 <TableCell>Total Paid</TableCell>
-                <TableCell>Remaining Payment</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>

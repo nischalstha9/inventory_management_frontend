@@ -33,15 +33,15 @@ const ProductInfo = ({ item }) => {
           </li>
           <li>
             <span className={classes.meta}>Cost Price:</span>
-            <span className={classes.metaValue}>{item.cost_price}</span>
+            <span className={classes.metaValue}>Rs. {item.cost_price}</span>
           </li>
           <li>
             <span className={classes.meta}>Selling Price:</span>
-            <span className={classes.metaValue}>{item.selling_price}</span>
+            <span className={classes.metaValue}>Rs. {item.selling_price}</span>
           </li>
           <li>
             <span className={classes.meta}>Remaining Quantity:</span>
-            <span className={classes.metaValue}>{item.quantity}</span>
+            <span className={classes.metaValue}>{item.quantity} units</span>
           </li>
         </ul>
       </p>

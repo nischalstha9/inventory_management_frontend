@@ -13,11 +13,13 @@ import ProductTransactions from "./ProductTransactions";
 import { useStyles as TransactionStyles } from "../transactions/AddTransaction";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = (theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(2),
+    minWidth: "500px",
   },
   closeButton: {
     position: "absolute",
@@ -60,14 +62,19 @@ const DialogActions = withStyles((theme) => ({
 
 export default function CustomizedDialogs({ itemName, itemId }) {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [item, setItem] = React.useState(null);
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
 
   const handleClickOpen = () => {
-    AxiosInstance.get(`/inventory/${shop_slug}/item/${itemId}/`)
+    setLoading(true);
+    AxiosInstance.get(
+      `/inventory/${shop_slug}/item/${itemId}/?show_transactions=true`
+    )
       .then((resp) => setItem(resp.data))
       .catch((err) => console.log(err.response));
     setOpen(true);
+    setLoading(false);
   };
   const handleClose = () => {
     setOpen(false);
@@ -76,7 +83,7 @@ export default function CustomizedDialogs({ itemName, itemId }) {
   const classes = TransactionStyles();
 
   return (
-    <div>
+    <div className="itemDialogModal">
       <span className="itemName" onClick={handleClickOpen}>
         {itemName}
       </span>
@@ -89,36 +96,40 @@ export default function CustomizedDialogs({ itemName, itemId }) {
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           {itemName}
         </DialogTitle>
-        <DialogContent dividers>
-          {item !== null ? (
-            <Typography gutterBottom>
-              <>
-                <div className={classes.productInfo}>
-                  <ProductInfo item={item} />
-                </div>
-                <hr />
-                <div className={classes.StockInTransTable}>
-                  <h4>Stock In Unpaid Transaction</h4>
+        {loading ? (
+          <CircularProgress disableShrink />
+        ) : (
+          <DialogContent dividers>
+            {item !== null ? (
+              <Typography gutterBottom>
+                <>
+                  <div className={classes.productInfo}>
+                    <ProductInfo item={item} />
+                  </div>
                   <hr />
-                  <ProductTransactions
-                    transactions={item.transactions.stock_in}
-                    type="STOCK_IN"
-                  />
-                </div>
-                <div className={classes.StockOutTransTable}>
-                  <h4>Stock Out Unpaid Transaction</h4>
-                  <hr />
-                  <ProductTransactions
-                    transactions={item.transactions.stock_out}
-                    type="STOCK_OUT"
-                  />
-                </div>
-              </>
-            </Typography>
-          ) : (
-            ""
-          )}
-        </DialogContent>
+                  <div className={classes.StockInTransTable}>
+                    <h4>Stock In Unpaid Transaction</h4>
+                    <hr />
+                    <ProductTransactions
+                      transactions={item.transactions.stock_in}
+                      type="STOCK_IN"
+                    />
+                  </div>
+                  <div className={classes.StockOutTransTable}>
+                    <h4>Stock Out Unpaid Transaction</h4>
+                    <hr />
+                    <ProductTransactions
+                      transactions={item.transactions.stock_out}
+                      type="STOCK_OUT"
+                    />
+                  </div>
+                </>
+              </Typography>
+            ) : (
+              ""
+            )}
+          </DialogContent>
+        )}
       </Dialog>
     </div>
   );

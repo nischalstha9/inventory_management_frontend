@@ -13,6 +13,10 @@ import { useSelector } from "react-redux";
 import { TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { FormControl } from "@material-ui/core";
+import ProductInfoDialog from "../common/ProductInfoDialog";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -20,9 +24,7 @@ const useStyles = makeStyles({
     width: "100%",
     padding: "10px",
   },
-  container: {
-    maxHeight: 440,
-  },
+  container: {},
   searchForm: {
     marginTop: "10px",
   },
@@ -34,6 +36,7 @@ export default function StickyHeadTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
   const [dataCount, setdataCount] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
@@ -41,10 +44,12 @@ export default function StickyHeadTable() {
     page * rowsPerPage
   }&search=${searchQuery}`;
   useEffect(() => {
+    setLoading(true);
     AxiosInstance.get(url).then((resp) => {
       setRows(resp.data.results);
       setdataCount(resp.data.count);
     });
+    setLoading(false);
   }, [url]);
 
   const handleChangePage = (event, newPage) => {
@@ -89,18 +94,40 @@ export default function StickyHeadTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((item) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.brand}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.cost_price}</TableCell>
-                    <TableCell>{item.selling_price}</TableCell>
-                    <TableCell>Delete / View</TableCell>
-                  </TableRow>
-                );
-              })}
+              {loading ? (
+                <TableRow hover tabIndex={-1}>
+                  <TableCell colspan={11}>
+                    <CircularProgress disableShrink />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rows.map((item) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
+                      <TableCell>
+                        <ProductInfoDialog
+                          itemName={item.name}
+                          itemId={item.id}
+                        />
+                      </TableCell>
+                      <TableCell>{item.brand}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.cost_price}</TableCell>
+                      <TableCell>{item.selling_price}</TableCell>
+                      <TableCell>
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          component={Link}
+                          to={`/inventory/item/${item.id}/edit`}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </TableContainer>

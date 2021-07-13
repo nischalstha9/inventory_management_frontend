@@ -18,8 +18,10 @@ import RegisterTokenConfirm from "../Components/auth/RegisterTokenConfirm";
 import NotFound from "../Components/common/NotFound";
 import Items from "../Components/inventory/Items";
 import Transactions from "../Components/transactions/Tranasactions";
+import Payments from "../Components/payment/Payments";
 import SideNav from "../Components/common/SideNav";
 import ItemCreate from "../Components/inventory/ItemCreate";
+import ItemCreateUpdate from "../Components/inventory/ItemCreateUpdate";
 import AddTransaction from "../Components/transactions/AddTransaction";
 import HeroMenu from "../Components/common/HeroMenu";
 
@@ -41,6 +43,7 @@ const Routes = ({ isAuthenticated }) => {
                   path="/transactions"
                   component={Transactions}
                 />
+                <PrivateRoute exact path="/payments" component={Payments} />
                 <PrivateRoute
                   path="/transactions/sell-stock"
                   component={AddTransaction}
@@ -49,7 +52,14 @@ const Routes = ({ isAuthenticated }) => {
                   path="/transactions/add-stock"
                   component={AddTransaction}
                 />
-                <PrivateRoute path="/inventory/new" component={ItemCreate} />
+                <PrivateRoute
+                  path="/inventory/new"
+                  component={ItemCreateUpdate}
+                />
+                <PrivateRoute
+                  path="/inventory/item/:item_id/edit"
+                  component={ItemCreateUpdate}
+                />
                 <PrivateRoute
                   exact
                   path="/change-password"

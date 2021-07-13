@@ -92,6 +92,7 @@ export default function AddTransaction() {
   const [items, setItems] = useState([]);
   const [chooseItem, setChooseItem] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alerts, setAlerts] = useState([]);
 
@@ -131,12 +132,14 @@ export default function AddTransaction() {
     initialFormVal.selling_price = 0;
   }
   const retrieveItemDetail = (pk) => {
+    setLoading(true);
     AxiosInstance(`/inventory/${shop_slug}/item/${pk}/`)
       .then((resp) => {
         setChooseItem(resp.data);
         formik.setFieldValue("cost", resp.data.selling_price);
       })
       .catch((err) => console.log(err.resp));
+    setLoading(false);
   };
 
   const formik = useFormik({
@@ -183,6 +186,8 @@ export default function AddTransaction() {
           <div className={classes.infoSection}>
             {chooseItem === null ? (
               "Choose Product to see it's details."
+            ) : loading ? (
+              <CircularProgress />
             ) : (
               <>
                 <div className={classes.productInfo}>

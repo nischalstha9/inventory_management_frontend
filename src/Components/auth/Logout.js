@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { log_out, insert_user } from "../../redux/action";
+import { log_out, insert_user, remove_role } from "../../redux/action";
 import axiosInstance from "../../AxiosInstance";
 import { Link } from "react-router-dom";
 
@@ -14,8 +14,11 @@ const Logout = () => {
       .finally(() => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
+        localStorage.removeItem("shop_detail");
         dispatch(log_out());
         dispatch(insert_user({}));
+        dispatch(remove_role());
       });
   }, []);
 

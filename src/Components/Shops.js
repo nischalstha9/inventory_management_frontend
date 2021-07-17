@@ -14,7 +14,9 @@ import { Helmet } from "react-helmet";
 import { FormControl } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { set_role, set_user_shop } from "../redux/action";
 
 const useStyles = makeStyles({
   root: {
@@ -28,6 +30,7 @@ const useStyles = makeStyles({
   },
 });
 const Shops = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -43,6 +46,16 @@ const Shops = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value));
     setPage(0);
+  };
+  const history = useHistory();
+
+  const handleLoginAs = (name, slug) => {
+    dispatch(set_role(1));
+    let shop = { name: name, slug: slug };
+    dispatch(set_user_shop(shop));
+    localStorage.setItem("role", 1);
+    localStorage.setItem("shop_detail", JSON.stringify(shop));
+    history.push("/inventory");
   };
 
   React.useEffect(() => {
@@ -62,7 +75,7 @@ const Shops = () => {
   return (
     <>
       <Helmet>
-        <title>Inventory Items</title>
+        <title>Shops</title>
       </Helmet>
       <Paper className={classes.root}>
         <h1>Shops List</h1>
@@ -117,6 +130,13 @@ const Shops = () => {
                           to={`/inventory/item/${shop.id}/edit`}
                         >
                           Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleLoginAs(shop.title, shop.slug)}
+                          variant="outlined"
+                          color="primary"
+                        >
+                          Login as {shop.title}
                         </Button>
                       </TableCell>
                     </TableRow>

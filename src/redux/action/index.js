@@ -23,6 +23,14 @@ export const insert_user = (token) => {
     payload: token,
   };
 };
+
+export const set_user_shop = (shop_dict) => {
+  return {
+    type: "SET_USER_SHOP",
+    payload: shop_dict,
+  };
+};
+
 export const insert_alert = (token) => {
   return {
     type: "INSERT_ALERT",
@@ -33,5 +41,18 @@ export const remove_alert = (token) => {
   return {
     type: "REMOVE_ALERT",
     payload: token,
+  };
+};
+
+export const set_role = (role_number) => {
+  return {
+    type: "INSERT_ROLE",
+    payload: role_number,
+  };
+};
+
+export const remove_role = () => {
+  return {
+    type: "REMOVE_ROLE",
   };
 };

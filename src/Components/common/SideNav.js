@@ -1,6 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Button } from "@material-ui/core";
+import { set_role } from "../../redux/action";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 
 const changeMenuBtn = () => {
   let sidebar = document.querySelector(".sidebar");
@@ -22,11 +26,21 @@ function menuBtnChange() {
 }
 
 const SideNav = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const user = useSelector((state) => state.user);
+  const emulated_role = useSelector((state) => state.role);
   const role = useSelector((state) => state.user.role);
   let savedSidebarToggleStatus = localStorage.getItem("sidebar_toggle");
   let sidebar_classes =
     savedSidebarToggleStatus === "true" ? "sidebar open" : "sidebar";
+
+  const logoutAsShop = () => {
+    dispatch(set_role(0));
+    localStorage.setItem("role", user.role);
+    localStorage.removeItem("shop_detail");
+    history.push("/shops");
+  };
 
   return (
     <div className={sidebar_classes}>
@@ -48,7 +62,7 @@ const SideNav = () => {
           </NavLink>
           <span className="tooltip">Dashboard</span>
         </li>
-        {role === 0 ? (
+        {emulated_role === 0 ? (
           <>
             <li>
               <NavLink to="/shops" activeClassName="selected">
@@ -61,8 +75,8 @@ const SideNav = () => {
         ) : (
           ""
         )}
-        }
-        {role === 1 ? (
+
+        {emulated_role === 1 ? (
           <>
             <li>
               <NavLink to="/inventory" activeClassName="selected">
@@ -117,6 +131,18 @@ const SideNav = () => {
           </NavLink>
           <span className="tooltip">Setting</span>
         </li> */}
+        {emulated_role === 1 && role === 0 ? (
+          <li>
+            <Button variant="outlined" color="secondary" onClick={logoutAsShop}>
+              <span className="links_name">
+                Logout as {user.shop_detail.name}
+              </span>
+            </Button>
+            <span className="tooltip">Logout as {user.shop_detail.name}</span>
+          </li>
+        ) : (
+          ""
+        )}
         <li className="profile">
           <div className="profile-details">
             {/* <img src="profile.jpg" alt="profileImg"> */}

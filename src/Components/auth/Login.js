@@ -11,7 +11,7 @@ import Container from "@material-ui/core/Container";
 import AxiosInstance from "../../AxiosInstance";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { log_in, insert_user } from "../../redux/action";
+import { log_in, insert_user, set_role } from "../../redux/action";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { green } from "@material-ui/core/colors";
 import { Helmet } from "react-helmet";
@@ -69,7 +69,9 @@ export default function SignIn() {
           AxiosInstance("auth/user/").then((resp) => {
             let userData = resp.data;
             dispatch(insert_user(userData));
+            dispatch(set_role(userData.role));
             localStorage.setItem("user", JSON.stringify(userData));
+            localStorage.setItem("role", JSON.stringify(userData.role));
           });
           setSuccess(true);
           history.push("/");

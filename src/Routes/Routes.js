@@ -28,7 +28,7 @@ import Shops from "../Components/Shops";
 import { useSelector } from "react-redux";
 
 const Routes = ({ isAuthenticated }) => {
-  const role = useSelector((state) => state.user.role);
+  const role = useSelector((state) => state.role);
   return (
     <Router>
       {isAuthenticated ? "" : <Header />}

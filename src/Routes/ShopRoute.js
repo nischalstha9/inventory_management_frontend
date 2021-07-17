@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 
 const GetUserRole = () => {
-  const role = useSelector((state) => state.user.role);
-  console.log(role);
+  const role = useSelector((state) => state.role);
   return role;
 };
 

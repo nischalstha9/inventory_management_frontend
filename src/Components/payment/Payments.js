@@ -128,10 +128,10 @@ export default function StickyHeadTable() {
   return (
     <>
       <Helmet>
-        <title>Transactions</title>
+        <title>Payments</title>
       </Helmet>
       <Paper className={classes.root}>
-        <h1>All Transactions</h1>
+        <h1>All Payments</h1>
         <hr />
         <form
           className={classes.searchForm}

@@ -10,17 +10,13 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { Button, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {
-  BalancedChip,
-  AddPaymentBtn,
-  ViewEditButton,
-} from "../transactions/Tranasactions";
+import { ViewEditButton } from "../transactions/Tranasactions";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({

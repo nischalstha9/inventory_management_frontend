@@ -306,3 +306,7 @@ form input[type="file"] {
   cursor: pointer;
   color: rgb(46, 124, 214);
 }
+
+.text-yellow {
+  color: rgb(212, 165, 36);
+}

@@ -115,7 +115,7 @@ export default function AddTransaction() {
       })
       .catch((err) => console.log(err.resp));
     setLoading(false);
-  }, [refresher]);
+  }, [shop_slug, trans_id, refresher]);
 
   let initialFormVal = {
     remarks: "",

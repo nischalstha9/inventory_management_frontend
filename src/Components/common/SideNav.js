@@ -23,6 +23,7 @@ function menuBtnChange() {
 
 const SideNav = () => {
   const user = useSelector((state) => state.user);
+  const role = useSelector((state) => state.user.role);
   let savedSidebarToggleStatus = localStorage.getItem("sidebar_toggle");
   let sidebar_classes =
     savedSidebarToggleStatus === "true" ? "sidebar open" : "sidebar";
@@ -47,27 +48,47 @@ const SideNav = () => {
           </NavLink>
           <span className="tooltip">Dashboard</span>
         </li>
-        <li>
-          <NavLink to="/inventory" activeClassName="selected">
-            <i className="bx bx-library"></i>
-            <span className="links_name">Inventory</span>
-          </NavLink>
-          <span className="tooltip">Inventory</span>
-        </li>
-        <li>
-          <NavLink to="/transactions" activeClassName="selected">
-            <i className="bx bx-sort-alt-2"></i>
-            <span className="links_name">Transactions</span>
-          </NavLink>
-          <span className="tooltip">Transactions</span>
-        </li>
-        <li>
-          <NavLink to="/payments" activeClassName="selected">
-            <i className="bx bx-money"></i>
-            <span className="links_name">Payments</span>
-          </NavLink>
-          <span className="tooltip">Payments</span>
-        </li>
+        {role === 0 ? (
+          <>
+            <li>
+              <NavLink to="/shops" activeClassName="selected">
+                <i className="bx bx-library"></i>
+                <span className="links_name">Shops</span>
+              </NavLink>
+              <span className="tooltip">Shops</span>
+            </li>
+          </>
+        ) : (
+          ""
+        )}
+        }
+        {role === 1 ? (
+          <>
+            <li>
+              <NavLink to="/inventory" activeClassName="selected">
+                <i className="bx bx-library"></i>
+                <span className="links_name">Inventory</span>
+              </NavLink>
+              <span className="tooltip">Inventory</span>
+            </li>
+            <li>
+              <NavLink to="/transactions" activeClassName="selected">
+                <i className="bx bx-sort-alt-2"></i>
+                <span className="links_name">Transactions</span>
+              </NavLink>
+              <span className="tooltip">Transactions</span>
+            </li>
+            <li>
+              <NavLink to="/payments" activeClassName="selected">
+                <i className="bx bx-money"></i>
+                <span className="links_name">Payments</span>
+              </NavLink>
+              <span className="tooltip">Payments</span>
+            </li>
+          </>
+        ) : (
+          ""
+        )}
         {/* <li>
           <NavLink to="inventory" activeClassName="selected">
             <i className="bx bx-folder"></i>
@@ -101,9 +122,11 @@ const SideNav = () => {
             {/* <img src="profile.jpg" alt="profileImg"> */}
             <div className="name_job">
               <div className="name">
-                {user.first_name !== ""
-                  ? `${user.first_name} ${user.last_name}`
-                  : user.email}
+                <NavLink to="/profile" activeClassName="selected">
+                  {user.first_name !== ""
+                    ? `${user.first_name} ${user.last_name}`
+                    : user.email}
+                </NavLink>
               </div>
               <div className="job">Web designer</div>
             </div>

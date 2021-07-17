@@ -87,7 +87,9 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddTransaction() {
+export default function AddTransaction({ mode }) {
+  //mode takes one value ("STOCK_IN or STOCK_OUT") if the transaction being sold or purchased
+
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [chooseItem, setChooseItem] = useState(null);
@@ -96,15 +98,8 @@ export default function AddTransaction() {
   const [success, setSuccess] = useState(false);
   const [alerts, setAlerts] = useState([]);
 
-  const mode =
-    window.location.pathname === "/transactions/add-stock"
-      ? "STOCK_IN"
-      : "STOCK_OUT";
-
   const title = mode === "STOCK_IN" ? "Add Stock" : "Sell Stock";
-
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
-
   useEffect(() => {
     let url = `inventory/${shop_slug}/item/`;
     if (mode === "STOCK_OUT") {
@@ -136,7 +131,12 @@ export default function AddTransaction() {
     AxiosInstance(`/inventory/${shop_slug}/item/${pk}/?show_transactions=true`)
       .then((resp) => {
         setChooseItem(resp.data);
-        formik.setFieldValue("cost", resp.data.selling_price);
+        if (mode === "STOCK_IN") {
+          formik.setFieldValue("cost", resp.data.cost_price);
+          formik.setFieldValue("selling_price", resp.data.selling_price);
+        } else {
+          formik.setFieldValue("cost", resp.data.selling_price);
+        }
       })
       .catch((err) => console.log(err.resp));
     setLoading(false);
@@ -174,6 +174,9 @@ export default function AddTransaction() {
         .finally(() => setProcessing(false));
     },
   });
+  if (mode !== "STOCK_IN" && mode !== "STOCK_OUT") {
+    return <h1>INVALID MODE</h1>;
+  }
   return (
     <>
       <Helmet>
@@ -194,22 +197,30 @@ export default function AddTransaction() {
                   <ProductInfo item={chooseItem} />
                 </div>
                 <hr />
-                <div className={classes.StockInTransTable}>
-                  <h4>Stock In Unpaid Transaction</h4>
-                  <hr />
-                  <ProductTransactions
-                    transactions={chooseItem.transactions.stock_in}
-                    type="STOCK_IN"
-                  />
-                </div>
-                <div className={classes.StockOutTransTable}>
-                  <h4>Stock Out Unpaid Transaction</h4>
-                  <hr />
-                  <ProductTransactions
-                    transactions={chooseItem.transactions.stock_out}
-                    type="STOCK_OUT"
-                  />
-                </div>
+                {chooseItem.transactions.stock_in.length > 0 ? (
+                  <div className={classes.StockInTransTable}>
+                    <h4>Stock In Unpaid Transaction</h4>
+                    <hr />
+                    <ProductTransactions
+                      transactions={chooseItem.transactions.stock_in}
+                      type="STOCK_IN"
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
+                {chooseItem.transactions.stock_out.length > 0 ? (
+                  <div className={classes.StockOutTransTable}>
+                    <h4>Stock Out Unpaid Transaction</h4>
+                    <hr />
+                    <ProductTransactions
+                      transactions={chooseItem.transactions.stock_out}
+                      type="STOCK_OUT"
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
               </>
             )}
           </div>
@@ -268,7 +279,9 @@ export default function AddTransaction() {
                 fullWidth
                 id="cost"
                 name="cost"
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
                 value={formik.values.cost}
                 label="Cost Price"
               />

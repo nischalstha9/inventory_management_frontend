@@ -55,6 +55,9 @@ export const ViewEditButton = withStyles({
     color: "white",
     width: "100%",
     margin: "1px",
+    "&:hover": {
+      background: "#3caff0",
+    },
   },
   label: {
     textTransform: "capitalize",

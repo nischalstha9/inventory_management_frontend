@@ -20,13 +20,15 @@ import Items from "../Components/inventory/Items";
 import Transactions from "../Components/transactions/Tranasactions";
 import Payments from "../Components/payment/Payments";
 import SideNav from "../Components/common/SideNav";
-import ItemCreate from "../Components/inventory/ItemCreate";
 import ItemCreateUpdate from "../Components/inventory/ItemCreateUpdate";
 import AddTransaction from "../Components/transactions/AddTransaction";
 import UpdateTransaction from "../Components/transactions/UpdateTransaction";
 import HeroMenu from "../Components/common/HeroMenu";
+import Shops from "../Components/Shops";
+import { useSelector } from "react-redux";
 
 const Routes = ({ isAuthenticated }) => {
+  const role = useSelector((state) => state.user.role);
   return (
     <Router>
       {isAuthenticated ? "" : <Header />}
@@ -36,7 +38,8 @@ const Routes = ({ isAuthenticated }) => {
             <>
               <SideNav />
               <section className="home-section">
-                <HeroMenu />
+                {role === 1 ? <HeroMenu /> : ""}
+                <PrivateRoute exact path="/shops" component={Shops} />
                 <PrivateRoute exact path="/profile" component={MyAccount} />
                 <PrivateRoute exact path="/inventory" component={Items} />
                 <PrivateRoute
@@ -52,11 +55,11 @@ const Routes = ({ isAuthenticated }) => {
                 <PrivateRoute exact path="/payments" component={Payments} />
                 <PrivateRoute
                   path="/transactions/sell-stock"
-                  component={AddTransaction}
+                  component={() => <AddTransaction mode="STOCK_OUT" />}
                 />
                 <PrivateRoute
                   path="/transactions/add-stock"
-                  component={AddTransaction}
+                  component={() => <AddTransaction mode="STOCK_IN" />}
                 />
                 <PrivateRoute
                   path="/inventory/new"

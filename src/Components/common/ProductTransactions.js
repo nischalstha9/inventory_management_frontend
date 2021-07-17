@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { yellow, red, green } from "@material-ui/core/colors";
 import { Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const ProductTransactions = ({ transactions, type }) => {
   const StyledTableCell = withStyles((theme) => ({
@@ -67,7 +68,11 @@ const ProductTransactions = ({ transactions, type }) => {
                     <TableCell>Rs. {trans.total_payable}</TableCell>
                     <TableCell>Rs. {trans.total_paid}</TableCell>
                     <TableCell>
-                      <PayButton variant="outlined">
+                      <PayButton
+                        variant="outlined"
+                        component={Link}
+                        to={`/transactions/${trans.id}/update`}
+                      >
                         Pay {trans.total_payable - trans.total_paid}
                       </PayButton>
                     </TableCell>

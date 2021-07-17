@@ -54,6 +54,7 @@ const CreatePayment = ({ transactionId, refreshTransactionData }) => {
         <Grid container xs={12}>
           <Grid xs={6}>
             <TextField
+              autoComplete="off"
               fullWidth
               style={{ padding: "0px 5px" }}
               variant="outlined"
@@ -69,6 +70,7 @@ const CreatePayment = ({ transactionId, refreshTransactionData }) => {
           </Grid>
           <Grid xs={6}>
             <TextField
+              autoComplete="off"
               style={{ padding: "0px 5px" }}
               variant="outlined"
               margin="normal"

@@ -107,22 +107,31 @@ export default function CustomizedDialogs({ itemName, itemId }) {
                     <ProductInfo item={item} />
                   </div>
                   <hr />
-                  <div className={classes.StockInTransTable}>
-                    <h4>Stock In Unpaid Transaction</h4>
-                    <hr />
-                    <ProductTransactions
-                      transactions={item.transactions.stock_in}
-                      type="STOCK_IN"
-                    />
-                  </div>
-                  <div className={classes.StockOutTransTable}>
-                    <h4>Stock Out Unpaid Transaction</h4>
-                    <hr />
-                    <ProductTransactions
-                      transactions={item.transactions.stock_out}
-                      type="STOCK_OUT"
-                    />
-                  </div>
+                  {item.transactions.stock_in.length > 0 ? (
+                    <div className={classes.StockInTransTable}>
+                      <h4>Stock In Unpaid Transaction</h4>
+                      <hr />
+                      <ProductTransactions
+                        transactions={item.transactions.stock_in}
+                        type="STOCK_IN"
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+
+                  {item.transactions.stock_out.length > 0 ? (
+                    <div className={classes.StockOutTransTable}>
+                      <h4>Stock Out Unpaid Transaction</h4>
+                      <hr />
+                      <ProductTransactions
+                        transactions={item.transactions.stock_out}
+                        type="STOCK_OUT"
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </>
               </Typography>
             ) : (

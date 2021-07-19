@@ -84,7 +84,7 @@ const ItemCreate = ({ mode }) => {
   };
 
   const HandleUpdate = (values) => {
-    AxiosInstance.patch(url, values, {
+    AxiosInstance.put(url, values, {
       withCredentials: true,
     })
       .then((resp) => {

@@ -22,6 +22,8 @@ function App() {
     dispatch(insert_user(user));
     if (emulated_role) {
       dispatch(set_role(parseInt(emulated_role)));
+    } else {
+      dispatch(set_role(parseInt(user.role)));
     }
     if (shop_detail) {
       dispatch(set_user_shop(shop));

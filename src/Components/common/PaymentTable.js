@@ -5,8 +5,10 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  Button,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import jsPDF from "jspdf";
 import React from "react";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -26,14 +28,22 @@ const StyledTableContainer = withStyles((theme) => ({
 }))(TableContainer);
 
 const PaymentTable = ({ payments, totalPaid, remainingAmount }) => {
+  const downloadReceipt = () => {
+    console.log("dwonlad");
+    var doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text(70, 20, "Payment Receipt");
+    doc.save();
+  };
   return (
     <div className="">
       <StyledTableContainer>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" id="PaymentTableData">
           <TableHead>
             <TableRow>
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell>Amount Paid</StyledTableCell>
+              <StyledTableCell>Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -41,7 +51,10 @@ const PaymentTable = ({ payments, totalPaid, remainingAmount }) => {
               return (
                 <TableRow>
                   <TableCell>{payment.date_of_pay}</TableCell>
-                  <TableCell>{payment.amount}</TableCell>
+                  <TableCell>Rs. {payment.amount}</TableCell>
+                  <StyledTableCell>
+                    <Button onClick={downloadReceipt}>Download Receipt</Button>
+                  </StyledTableCell>
                 </TableRow>
               );
             })}

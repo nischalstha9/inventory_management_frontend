@@ -18,6 +18,7 @@ import { Chip } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf";
 
 export const BalancedChip = withStyles({
   root: {
@@ -159,6 +160,64 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
+  const downloadTable = () => {
+    function createHeaders(keys) {
+      var result = [];
+      for (var i = 0; i < keys.length; i += 1) {
+        result.push({
+          id: keys[i],
+          name: keys[i],
+          prompt: keys[i],
+          width: 65,
+          align: "center",
+          padding: 0,
+        });
+      }
+      return result;
+    }
+
+    var headers = createHeaders([
+      "Date",
+      "Id",
+      "Vendor/Client",
+      "Item",
+      "Type",
+      "Quantity",
+      "Price Per Unit",
+      "Total Payable",
+      "Total Paid",
+      "Remaining Amount",
+    ]);
+
+    var generateData = function (rows) {
+      var result = [];
+      rows.forEach((row) => {
+        var data = {
+          Date: row.date_of_trans.toString(),
+          Id: row.id.toString(),
+          "Vendor/Client": row.vendor_client.toString(),
+          Item: row.item_name.toString(),
+          Type: row._type.toString(),
+          Quantity: row.quantity.toString(),
+          "Price Per Unit": row.cost.toString(),
+          "Total Payable": row.total_payable.toString(),
+          "Total Paid": row.total_paid.toString(),
+          "Remaining Amount": (row.total_payable - row.total_paid).toString(),
+        };
+        result.push(Object.assign({}, data));
+      });
+      return result;
+    };
+
+    var doc = new jsPDF({ putOnlyUsedFonts: false, orientation: "l" });
+    doc.text(10, 10, "Transaction Table");
+    let table = doc.table(10, 16, generateData(rows), headers, {
+      autoSize: true,
+      fontSize: 9,
+    });
+    table.output("pdfobjectnewwindow");
+  };
+
   const types = [
     { label: "All Transactions", value: "" },
     { label: "Stock In Transactions", value: "STOCK_IN" },
@@ -271,6 +330,15 @@ export default function StickyHeadTable() {
                     }
                   }}
                 ></TextField>
+              </Grid>
+              <Grid className={classes.formEntity} xs={4}>
+                <Button
+                  onClick={downloadTable}
+                  variant="outlined"
+                  color="primary"
+                >
+                  Download Table Data
+                </Button>
               </Grid>
             </Grid>
           </Grid>

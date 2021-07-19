@@ -55,55 +55,56 @@ const SideNav = () => {
           <input type="text" placeholder="Search..." />
           <span className="tooltip">Search</span>
         </li>
-        <li>
-          <NavLink to="/dashboard" activeClassName="selected">
-            <i className="bx bx-grid-alt"></i>
-            <span className="links_name">Dashboard</span>
-          </NavLink>
-          <span className="tooltip">Dashboard</span>
-        </li>
-        {emulated_role === 0 ? (
-          <>
-            <li>
-              <NavLink to="/shops" activeClassName="selected">
-                <i className="bx bx-library"></i>
-                <span className="links_name">Shops</span>
-              </NavLink>
-              <span className="tooltip">Shops</span>
-            </li>
-          </>
-        ) : (
-          ""
-        )}
+        <ul>
+          <li>
+            <NavLink to="/dashboard" activeClassName="selected">
+              <i className="bx bx-grid-alt"></i>
+              <span className="links_name">Dashboard</span>
+            </NavLink>
+            <span className="tooltip">Dashboard</span>
+          </li>
+          {emulated_role === 0 ? (
+            <>
+              <li>
+                <NavLink to="/shops" activeClassName="selected">
+                  <i className="bx bx-library"></i>
+                  <span className="links_name">Shops</span>
+                </NavLink>
+                <span className="tooltip">Shops</span>
+              </li>
+            </>
+          ) : (
+            ""
+          )}
 
-        {emulated_role === 1 ? (
-          <>
-            <li>
-              <NavLink to="/inventory" activeClassName="selected">
-                <i className="bx bx-library"></i>
-                <span className="links_name">Inventory</span>
-              </NavLink>
-              <span className="tooltip">Inventory</span>
-            </li>
-            <li>
-              <NavLink to="/transactions" activeClassName="selected">
-                <i className="bx bx-sort-alt-2"></i>
-                <span className="links_name">Transactions</span>
-              </NavLink>
-              <span className="tooltip">Transactions</span>
-            </li>
-            <li>
-              <NavLink to="/payments" activeClassName="selected">
-                <i className="bx bx-money"></i>
-                <span className="links_name">Payments</span>
-              </NavLink>
-              <span className="tooltip">Payments</span>
-            </li>
-          </>
-        ) : (
-          ""
-        )}
-        {/* <li>
+          {emulated_role === 1 ? (
+            <>
+              <li>
+                <NavLink to="/inventory" activeClassName="selected">
+                  <i className="bx bx-library"></i>
+                  <span className="links_name">Inventory</span>
+                </NavLink>
+                <span className="tooltip">Inventory</span>
+              </li>
+              <li>
+                <NavLink to="/transactions" activeClassName="selected">
+                  <i className="bx bx-sort-alt-2"></i>
+                  <span className="links_name">Transactions</span>
+                </NavLink>
+                <span className="tooltip">Transactions</span>
+              </li>
+              <li>
+                <NavLink to="/payments" activeClassName="selected">
+                  <i className="bx bx-money"></i>
+                  <span className="links_name">Payments</span>
+                </NavLink>
+                <span className="tooltip">Payments</span>
+              </li>
+            </>
+          ) : (
+            ""
+          )}
+          {/* <li>
           <NavLink to="inventory" activeClassName="selected">
             <i className="bx bx-folder"></i>
             <span className="links_name">File Manager</span>
@@ -131,18 +132,19 @@ const SideNav = () => {
           </NavLink>
           <span className="tooltip">Setting</span>
         </li> */}
-        {emulated_role === 1 && role === 0 ? (
-          <li>
-            <Button variant="outlined" color="secondary" onClick={logoutAsShop}>
-              <span className="links_name">
-                Logout as {user.shop_detail.name}
-              </span>
+          {emulated_role === 1 && role === 0 ? (
+            <Button
+              variant="contained"
+              disableElevation
+              color="secondary"
+              onClick={logoutAsShop}
+            >
+              Goto Admin
             </Button>
-            <span className="tooltip">Logout as {user.shop_detail.name}</span>
-          </li>
-        ) : (
-          ""
-        )}
+          ) : (
+            ""
+          )}
+        </ul>
         <li className="profile">
           <div className="profile-details">
             {/* <img src="profile.jpg" alt="profileImg"> */}
@@ -156,10 +158,10 @@ const SideNav = () => {
               </div>
               <div className="job">Web designer</div>
             </div>
+            <NavLink to="/logout">
+              <i className="bx bx-log-out" id="log_out"></i>
+            </NavLink>
           </div>
-          <NavLink to="/logout" activeClassName="selected">
-            <i className="bx bx-log-out" id="log_out"></i>
-          </NavLink>
         </li>
       </ul>
     </div>

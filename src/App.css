@@ -231,7 +231,6 @@ form input[type="file"] {
   padding: 10px 14px;
   background: #1d1b31;
   transition: all 0.5s ease;
-  overflow: hidden;
 }
 .sidebar.open li.profile {
   width: 250px;
@@ -263,16 +262,17 @@ form input[type="file"] {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  background: #1d1b31;
   width: 100%;
   height: 60px;
   line-height: 60px;
   border-radius: 0px;
   transition: all 0.5s ease;
 }
+#log_out:hover {
+  background: white;
+}
 .sidebar.open .profile #log_out {
   width: 50px;
-  background: none;
 }
 .home-section {
   position: relative;
@@ -309,4 +309,8 @@ form input[type="file"] {
 
 .text-yellow {
   color: rgb(212, 165, 36);
+}
+.overflow-scroll {
+  overflow-y: scroll;
+  overflow-x: auto;
 }

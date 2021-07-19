@@ -29,7 +29,7 @@ const ProductInfo = ({ item }) => {
           </li>
           <li>
             <span className={classes.meta}>Category:</span>
-            <span className={classes.metaValue}>{item.category}</span>
+            <span className={classes.metaValue}>{item.category_name}</span>
           </li>
           <li>
             <span className={classes.meta}>Cost Price:</span>

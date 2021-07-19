@@ -13,6 +13,7 @@ import PaymentTable from "../common/PaymentTable";
 import { yellow, red } from "@material-ui/core/colors";
 import { Alert } from "@material-ui/lab";
 import { useParams } from "react-router-dom";
+import { jsPDF } from "jspdf";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,6 +86,10 @@ export const useStyles = makeStyles((theme) => ({
     margin: "10px 0px",
     background: red[100],
     borderRadius: "8px",
+  },
+  productTableContainer: {
+    display: "flex",
+    justifyContent: "space-between",
   },
 }));
 
@@ -175,7 +180,17 @@ export default function AddTransaction() {
                 </div>
                 <hr />
                 <div className={classes.productInfo}>
-                  <h4>Payment Table:</h4>
+                  <div className={classes.productTableContainer}>
+                    <h4>Payment Table:</h4>
+                    <Button
+                      variant=""
+                      disableElevation
+                      size="small"
+                      color="inherit"
+                    >
+                      Download Payment Data
+                    </Button>
+                  </div>
                   <PaymentTable
                     payments={chooseItem.payments}
                     totalPaid={chooseItem.total_paid}

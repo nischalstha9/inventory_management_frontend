@@ -127,6 +127,23 @@ export default function AddTransaction() {
     contact: 0,
   };
 
+  const downloadPaymentTable = () => {
+    let doc = new jsPDF("p", "pt", "letter");
+    let table = document.querySelector("#PaymentTableData");
+    doc.html(table, {
+      callback: function (doc) {
+        doc.output("pdfobjectnewwindow");
+      },
+      filename: "payment",
+      html2canvas: {
+        scale: 0.75,
+        backgroundColor: "#c0c0c0",
+      },
+      x: 20,
+      y: 20,
+    });
+  };
+
   const formik = useFormik({
     initialValues: initialFormVal,
     onSubmit: (values) => {
@@ -187,6 +204,7 @@ export default function AddTransaction() {
                       disableElevation
                       size="small"
                       color="inherit"
+                      onClick={downloadPaymentTable}
                     >
                       Download Payment Data
                     </Button>
@@ -195,6 +213,7 @@ export default function AddTransaction() {
                     payments={chooseItem.payments}
                     totalPaid={chooseItem.total_paid}
                     remainingAmount={chooseItem.remaining_payment}
+                    totalPayable={chooseItem.total_payable}
                   />
                   {chooseItem.remaining_payment !== 0 ? (
                     <CreatePayment

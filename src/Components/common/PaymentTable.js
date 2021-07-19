@@ -5,7 +5,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Button,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import jsPDF from "jspdf";
@@ -27,7 +26,12 @@ const StyledTableContainer = withStyles((theme) => ({
   },
 }))(TableContainer);
 
-const PaymentTable = ({ payments, totalPaid, remainingAmount }) => {
+const PaymentTable = ({
+  payments,
+  totalPaid,
+  remainingAmount,
+  totalPayable,
+}) => {
   const downloadReceipt = () => {
     console.log("dwonlad");
     var doc = new jsPDF();
@@ -43,7 +47,7 @@ const PaymentTable = ({ payments, totalPaid, remainingAmount }) => {
             <TableRow>
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell>Amount Paid</StyledTableCell>
-              <StyledTableCell>Action</StyledTableCell>
+              <StyledTableCell>Remaining Amount</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -52,9 +56,7 @@ const PaymentTable = ({ payments, totalPaid, remainingAmount }) => {
                 <TableRow>
                   <TableCell>{payment.date_of_pay}</TableCell>
                   <TableCell>Rs. {payment.amount}</TableCell>
-                  <StyledTableCell>
-                    <Button onClick={downloadReceipt}>Download Receipt</Button>
-                  </StyledTableCell>
+                  <TableCell>Rs. {(totalPayable -= payment.amount)}</TableCell>
                 </TableRow>
               );
             })}

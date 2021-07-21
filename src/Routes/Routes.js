@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import Header from "../Components/common/Header";
-import Footer from "../Components/common/Footer";
+// import Footer from "../Components/common/Footer";
 import Login from "../Components/auth/Login";
 import Logout from "../Components/auth/Logout";
 import Register from "../Components/auth/Register";

@@ -6,7 +6,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
@@ -19,6 +18,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { ViewEditButton } from "../transactions/Tranasactions";
 import { Link } from "react-router-dom";
 import { jsPDF } from "jspdf";
+import CustomTablePagination from "../utils/CustomTablePagination";
 
 const useStyles = makeStyles({
   root: {
@@ -86,18 +86,12 @@ export default function StickyHeadTable() {
     page * rowsPerPage
   }&search=${filterForm.search}&_type=${filterForm.type}&balanced=${
     filterForm.balanced
-  }&id=${filterForm.trans_search}`;
+  }&id=${filterForm.trans_search}&date__gte=${
+    filterForm.sdate || ""
+  }&date__lte=${filterForm.edate || ""}`;
   useEffect(() => {
     setLoading(true);
-    let new_url = url;
-    if (filterForm.sdate !== "") {
-      new_url = new_url += `&date__gte=${filterForm.sdate}`;
-    }
-    if (filterForm.edate !== "") {
-      new_url = new_url += `&date__lte=${filterForm.edate}`;
-    }
-    console.log(new_url);
-    AxiosInstance.get(new_url)
+    AxiosInstance.get(url)
       .then((resp) => {
         setRows(resp.data.results);
         setdataCount(resp.data.count);
@@ -361,18 +355,14 @@ export default function StickyHeadTable() {
               )}
             </TableBody>
           </Table>
+          <CustomTablePagination
+            dataCount={dataCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 100]}
-          component="div"
-          count={dataCount}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={(e) => {
-            handleChangeRowsPerPage(e);
-          }}
-        />
       </Paper>
     </>
   );

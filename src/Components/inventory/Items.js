@@ -10,12 +10,12 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { FormControl } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Button } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -38,11 +38,30 @@ export default function StickyHeadTable() {
   const [dataCount, setdataCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [categories, setCategories] = React.useState([]);
+  const initialFilter = Object.freeze({
+    category: null,
+    brand: null,
+  });
+  const [filter, setFilter] = React.useState(initialFilter);
+  const handleFilterChange = (e) => {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
+  };
 
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
+
+  useEffect(() => {
+    setLoading(true);
+    AxiosInstance("inventory/category/")
+      .then((resp) => setCategories(resp.data))
+      .catch((err) => console.log(err));
+  }, []);
+
   const url = `/inventory/${shop_slug}/item/?limit=${rowsPerPage}&offset=${
     page * rowsPerPage
-  }&search=${searchQuery}`;
+  }&search=${searchQuery}&category=${filter.category || ""}&brand=${
+    filter.brand || ""
+  }`;
   useEffect(() => {
     setLoading(true);
     AxiosInstance.get(url).then((resp) => {
@@ -69,17 +88,41 @@ export default function StickyHeadTable() {
       <Paper className={classes.root}>
         <h1>Inventory Items</h1>
         <hr />
-        <FormControl className={classes.searchForm}>
-          <TextField
-            variant="outlined"
-            label="Search"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                setSearchQuery(e.target.value);
-              }
-            }}
-          ></TextField>
-        </FormControl>
+        <Grid container xs={12}>
+          <Grid xs={3}>
+            <FormControl className={classes.searchForm}>
+              <TextField
+                variant="outlined"
+                label="Search"
+                onKeyUp={(e) => {
+                  if (e.keyCode === 13) {
+                    setSearchQuery(e.target.value);
+                  }
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid xs={3}>
+            <FormControl className={classes.searchForm}>
+              <TextField
+                variant="outlined"
+                select
+                id="category"
+                name="category"
+                label="Categories"
+                type="text"
+                displayEmpty
+                onChange={(e) => handleFilterChange(e)}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormControl>
+          </Grid>
+        </Grid>
 
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">

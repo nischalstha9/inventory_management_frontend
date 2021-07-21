@@ -19,6 +19,7 @@ import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Link } from "react-router-dom";
 import { jsPDF } from "jspdf";
+import CustomTablePagination from "../utils/CustomTablePagination";
 
 export const BalancedChip = withStyles({
   root: {
@@ -420,18 +421,14 @@ export default function StickyHeadTable() {
               )}
             </TableBody>
           </Table>
+          <CustomTablePagination
+            dataCount={dataCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 100]}
-          component="div"
-          count={dataCount}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={(e) => {
-            handleChangeRowsPerPage(e);
-          }}
-        />
       </Paper>
     </>
   );

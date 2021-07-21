@@ -13,7 +13,7 @@ import { TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { FormControl } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Button } from "@material-ui/core";
+import { Button, ButtonGroup } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { set_role, set_user_shop } from "../redux/action";
@@ -123,21 +123,23 @@ const Shops = () => {
                         {shop.verified ? "Verified" : "Not Verified"}
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
-                          variant="outlined"
-                          component={Link}
-                          to={`/inventory/item/${shop.id}/edit`}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          onClick={() => handleLoginAs(shop.title, shop.slug)}
-                          variant="outlined"
-                          color="primary"
-                        >
-                          Login as {shop.title}
-                        </Button>
+                        <ButtonGroup>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            component={Link}
+                            to={`/inventory/item/${shop.id}/edit`}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            onClick={() => handleLoginAs(shop.title, shop.slug)}
+                            variant="outlined"
+                            color="primary"
+                          >
+                            Login as {shop.title}
+                          </Button>
+                        </ButtonGroup>
                       </TableCell>
                     </TableRow>
                   );

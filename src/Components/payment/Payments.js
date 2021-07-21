@@ -150,11 +150,11 @@ export default function StickyHeadTable() {
     };
 
     var doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "portrait" });
-    let table = doc.table(10, 10, generateData(rows), headers, {
+    doc.table(10, 10, generateData(rows), headers, {
       autoSize: true,
       fontSize: 9,
     });
-    table.save();
+    doc.output("pdfobjectnewwindow");
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

@@ -42,6 +42,7 @@ const CustomTablePagination = ({
         ActionsComponent={TablePaginationActions}
       />
       <Pagination
+        color="primary"
         count={Math.ceil(dataCount / rowsPerPage)}
         page={page + 1}
         onChange={(e, num) => handleChangePage(e, num - 1)}

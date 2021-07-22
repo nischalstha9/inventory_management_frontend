@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { Button, TextField } from "@material-ui/core";
+import { Button, Select, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
@@ -188,9 +188,9 @@ export default function StickyHeadTable() {
             <Grid container xs={12}>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="type">Transaction Type:</label>
-                <TextField
+                <Select
                   type="text"
-                  select
+                  value={filterForm.type}
                   displayEmpty
                   id="type"
                   name="type"
@@ -203,16 +203,16 @@ export default function StickyHeadTable() {
                       {type.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                </Select>
               </Grid>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="balanced">Balanced:</label>
-                <TextField
+                <Select
                   type="text"
-                  select
                   name="balanced"
                   displayEmpty
                   id="balanced"
+                  value={filterForm.balanced}
                   onChange={(e) => {
                     handleFormChange(e);
                   }}
@@ -222,7 +222,7 @@ export default function StickyHeadTable() {
                       {type.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                </Select>
               </Grid>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="sdate">Start Date:</label>
@@ -304,55 +304,45 @@ export default function StickyHeadTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading ? (
-                <TableRow hover tabIndex={-1}>
-                  <TableCell colspan={11}>
-                    <CircularProgress disableShrink />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                rows.map((payment) => {
-                  let balanced =
-                    payment.transaction_detail.total_paid ===
-                    payment.transaction_detail.total_payable;
-                  return (
-                    <TableRow hover tabIndex={-1} key={payment.id}>
-                      <TableCell>
-                        {payment.transaction_detail.date_of_trans}
-                      </TableCell>
-                      <TableCell>{payment.id}</TableCell>
-                      <TableCell>{payment.transaction_detail._type}</TableCell>
-                      <TableCell>
-                        {payment.transaction_detail.vendor_client}
-                      </TableCell>
-                      <TableCell>
-                        <ProductInfoDialog
-                          itemName={payment.transaction_detail.item_name}
-                          itemId={payment.transaction_detail.item}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {payment.transaction_detail.quantity}
-                      </TableCell>
-                      <TableCell>
-                        Rs. {payment.transaction_detail.total_paid}
-                      </TableCell>
-                      <TableCell>
+              {rows.map((payment) => {
+                let balanced =
+                  payment.transaction_detail.total_paid ===
+                  payment.transaction_detail.total_payable;
+                return (
+                  <TableRow hover tabIndex={-1} key={payment.id}>
+                    <TableCell>
+                      {payment.transaction_detail.date_of_trans}
+                    </TableCell>
+                    <TableCell>{payment.id}</TableCell>
+                    <TableCell>{payment.transaction_detail._type}</TableCell>
+                    <TableCell>
+                      {payment.transaction_detail.vendor_client}
+                    </TableCell>
+                    <TableCell>
+                      <ProductInfoDialog
+                        itemName={payment.transaction_detail.item_name}
+                        itemId={payment.transaction_detail.item}
+                      />
+                    </TableCell>
+                    <TableCell>{payment.transaction_detail.quantity}</TableCell>
+                    <TableCell>
+                      Rs. {payment.transaction_detail.total_paid}
+                    </TableCell>
+                    <TableCell>
+                      <Grid>
                         <Grid>
-                          <Grid>
-                            <ViewEditButton
-                              component={Link}
-                              to={`transactions/${payment.transaction_detail.id}/update`}
-                            >
-                              View/Edit{balanced ? "" : "/Pay"}
-                            </ViewEditButton>
-                          </Grid>
+                          <ViewEditButton
+                            component={Link}
+                            to={`transactions/${payment.transaction_detail.id}/update`}
+                          >
+                            View/Edit{balanced ? "" : "/Pay"}
+                          </ViewEditButton>
                         </Grid>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           <CustomTablePagination

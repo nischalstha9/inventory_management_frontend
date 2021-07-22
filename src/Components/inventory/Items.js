@@ -10,13 +10,14 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { MenuItem, TextField } from "@material-ui/core";
+import { MenuItem, Select, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { FormControl } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import CustomTablePagination from "../utils/CustomTablePagination";
 
 const useStyles = makeStyles({
   root: {
@@ -40,8 +41,8 @@ export default function StickyHeadTable() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [categories, setCategories] = React.useState([]);
   const initialFilter = Object.freeze({
-    category: null,
-    brand: null,
+    category: "",
+    brand: "",
   });
   const [filter, setFilter] = React.useState(initialFilter);
   const handleFilterChange = (e) => {
@@ -104,22 +105,23 @@ export default function StickyHeadTable() {
           </Grid>
           <Grid xs={3}>
             <FormControl className={classes.searchForm}>
-              <TextField
+              <Select
                 variant="outlined"
-                select
                 id="category"
                 name="category"
                 label="Categories"
                 type="text"
                 displayEmpty
-                onChange={(e) => handleFilterChange(e)}
+                value={filter.category}
+                onChange={handleFilterChange}
               >
+                <MenuItem value="">All Items</MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
                   </MenuItem>
                 ))}
-              </TextField>
+              </Select>
             </FormControl>
           </Grid>
         </Grid>
@@ -173,18 +175,14 @@ export default function StickyHeadTable() {
               )}
             </TableBody>
           </Table>
+          <CustomTablePagination
+            dataCount={dataCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 100]}
-          component="div"
-          count={dataCount}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={(e) => {
-            handleChangeRowsPerPage(e);
-          }}
-        />
       </Paper>
     </>
   );

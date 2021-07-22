@@ -6,7 +6,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
@@ -20,6 +19,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { Link } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import CustomTablePagination from "../utils/CustomTablePagination";
+import { Select } from "@material-ui/core";
 
 export const BalancedChip = withStyles({
   root: {
@@ -132,18 +132,12 @@ export default function StickyHeadTable() {
     page * rowsPerPage
   }&search=${filterForm.search}&_type=${filterForm.type}&balanced=${
     filterForm.balanced
-  }&id=${filterForm.trans_search}`;
+  }&id=${filterForm.trans_search}&date__gte=${
+    filterForm.sdate || ""
+  }&date__lte=${filterForm.edate || ""}`;
   useEffect(() => {
     setLoading(true);
-    let new_url = url;
-    if (filterForm.sdate !== "") {
-      new_url = new_url += `&date__gte=${filterForm.sdate}`;
-    }
-    if (filterForm.edate !== "") {
-      new_url = new_url += `&date__lte=${filterForm.edate}`;
-    }
-    console.log(new_url);
-    AxiosInstance.get(new_url)
+    AxiosInstance.get(url)
       .then((resp) => {
         setRows(resp.data.results);
         setdataCount(resp.data.count);
@@ -248,12 +242,12 @@ export default function StickyHeadTable() {
             <Grid container xs={12}>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="type">Transaction Type:</label>
-                <TextField
+                <Select
                   type="text"
-                  select
                   displayEmpty
                   id="type"
                   name="type"
+                  value={filterForm.type}
                   onChange={(e) => {
                     handleFormChange(e);
                   }}
@@ -263,16 +257,16 @@ export default function StickyHeadTable() {
                       {type.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                </Select>
               </Grid>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="balanced">Balanced:</label>
-                <TextField
+                <Select
                   type="text"
-                  select
                   name="balanced"
                   displayEmpty
                   id="balanced"
+                  value={filterForm.balanced}
                   onChange={(e) => {
                     handleFormChange(e);
                   }}
@@ -282,7 +276,7 @@ export default function StickyHeadTable() {
                       {type.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                </Select>
               </Grid>
               <Grid className={classes.formEntity} xs={3}>
                 <label htmlFor="sdate">Start Date:</label>

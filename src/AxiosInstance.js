@@ -12,7 +12,7 @@ const AxiosInstance = axios.create({
   },
 });
 
-const refreshURL = baseURL + "auth/token/refresh/";
+const refreshPath = "auth/token/refresh/";
 
 // Add a request interceptor
 AxiosInstance.interceptors.request.use(
@@ -37,7 +37,7 @@ AxiosInstance.interceptors.response.use(
   function (error) {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && originalRequest.url === refreshURL) {
+    if (error.response.status === 401 && originalRequest.url === refreshPath) {
       window.location.pathname = "/logout";
       return Promise.reject(error);
     }
@@ -48,7 +48,7 @@ AxiosInstance.interceptors.response.use(
         if (res.status === 200) {
           let new_token = res.data.access;
           localStorage.setItem("access_token", new_token);
-          originalRequest.headers["Authorization"] = new_token;
+          originalRequest.headers["Authorization"] = "JWT " + new_token;
           return AxiosInstance(originalRequest);
         }
       });

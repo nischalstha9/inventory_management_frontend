@@ -14,7 +14,6 @@ import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import ProductInfoDialog from "../common/ProductInfoDialog";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { ViewEditButton } from "../transactions/Tranasactions";
 import { Link } from "react-router-dom";
 import { jsPDF } from "jspdf";
@@ -84,11 +83,11 @@ export default function StickyHeadTable() {
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
   var url = `/transactions/${shop_slug}/payment/?limit=${rowsPerPage}&offset=${
     page * rowsPerPage
-  }&search=${filterForm.search}&_type=${filterForm.type}&balanced=${
-    filterForm.balanced
-  }&id=${filterForm.trans_search}&date__gte=${
-    filterForm.sdate || ""
-  }&date__lte=${filterForm.edate || ""}`;
+  }&search=${filterForm.search}&transaction___type=${
+    filterForm.type
+  }&transaction__balanced=${filterForm.balanced}&transaction__id=${
+    filterForm.trans_search
+  }&date__gte=${filterForm.sdate || ""}&date__lte=${filterForm.edate || ""}`;
   useEffect(() => {
     setLoading(true);
     AxiosInstance.get(url)
@@ -118,7 +117,7 @@ export default function StickyHeadTable() {
 
     var headers = createHeaders([
       "Date",
-      "Transaction Id",
+      "Id",
       "Type",
       "Vendor/Client",
       "Item",
@@ -131,7 +130,7 @@ export default function StickyHeadTable() {
       rows.forEach((row) => {
         var data = {
           Date: row.date_of_pay.toString(),
-          "Transaction Id": row.transaction.toString(),
+          Id: row.transaction.toString(),
           Type: row.transaction_detail._type.toString(),
           "Vendor/Client": row.transaction_detail.vendor_client.toString(),
           Item: row.transaction_detail.item_name.toString(),
@@ -294,7 +293,7 @@ export default function StickyHeadTable() {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Transaction Id</TableCell>
+                <TableCell>Id</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Vendor/Client</TableCell>
                 <TableCell>Item</TableCell>

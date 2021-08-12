@@ -12,6 +12,8 @@ import ProductInfo from "../common/ProductInfo";
 import ProductTransactions from "../common/ProductTransactions";
 import { yellow, red } from "@material-ui/core/colors";
 import { Alert } from "@material-ui/lab";
+import { useHistory } from "react-router";
+import { location } from "url-parse";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,7 +91,6 @@ export const useStyles = makeStyles((theme) => ({
 
 export default function AddTransaction({ mode }) {
   //mode takes one value ("STOCK_IN or STOCK_OUT") if the transaction being sold or purchased
-
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [chooseItem, setChooseItem] = useState(null);
@@ -100,6 +101,21 @@ export default function AddTransaction({ mode }) {
 
   const title = mode === "STOCK_IN" ? "Add Stock" : "Sell Stock";
   const shop_slug = useSelector((state) => state.user.shop_detail.slug);
+
+  const history = useHistory();
+  const queryString = require("query-string");
+  const query = queryString.parse(history.location.search);
+  const updateQuery = (param, value) => {
+    const modifiedQuery = {
+      ...query,
+      [param]: value,
+    };
+    history.replace({
+      pathname: location.pathname,
+      search: queryString.stringify(modifiedQuery),
+    });
+  };
+
   useEffect(() => {
     let url = `inventory/${shop_slug}/item/`;
     if (mode === "STOCK_OUT") {
@@ -115,7 +131,7 @@ export default function AddTransaction({ mode }) {
   let initialFormVal = {
     _type: mode,
     vendor_client: "",
-    item: 0,
+    item: query.product ? query.product : 0,
     quantity: 0,
     cost: 0.0,
     paid: 0.0,
@@ -141,6 +157,10 @@ export default function AddTransaction({ mode }) {
       .catch((err) => console.log(err.resp));
     setLoading(false);
   };
+
+  useEffect(() => {
+    retrieveItemDetail(parseInt(query.product));
+  }, []);
 
   const formik = useFormik({
     initialValues: initialFormVal,
@@ -237,6 +257,7 @@ export default function AddTransaction({ mode }) {
                 onChange={(e) => {
                   retrieveItemDetail(e.target.value);
                   formik.handleChange(e);
+                  updateQuery("product", e.target.value);
                 }}
                 value={formik.values.item}
                 label="Product"

@@ -131,7 +131,7 @@ export default function AddTransaction({ mode }) {
   let initialFormVal = {
     _type: mode,
     vendor_client: "",
-    item: query.product ? query.product : 0,
+    item: query.product !== "" ? query.product : 0,
     quantity: 0,
     cost: 0.0,
     paid: 0.0,
@@ -159,7 +159,9 @@ export default function AddTransaction({ mode }) {
   };
 
   useEffect(() => {
-    retrieveItemDetail(parseInt(query.product));
+    if (query.product !== "") {
+      retrieveItemDetail(parseInt(query.product));
+    }
   }, []);
 
   const formik = useFormik({

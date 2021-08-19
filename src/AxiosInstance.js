@@ -38,6 +38,7 @@ AxiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response.status === 401 && originalRequest.url === refreshPath) {
+      alert("Session Expired! Please Login Again!");
       window.location.pathname = "/logout";
       return Promise.reject(error);
     }

@@ -78,7 +78,12 @@ export default function SignIn() {
         })
         .catch((err) => {
           setSuccess(false);
-          let msg = Object.entries(err.response.data)[0][1];
+          let msg;
+          if (err.response === undefined) {
+            msg = "A network error occoured! Please Try again later";
+          } else {
+            msg = Object.entries(err.response.data)[0][1];
+          }
           setAlerts([
             {
               message: msg,

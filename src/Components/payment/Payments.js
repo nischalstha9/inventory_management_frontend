@@ -293,12 +293,12 @@ export default function StickyHeadTable() {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Id</TableCell>
+                <TableCell>ID</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Vendor/Client</TableCell>
-                <TableCell>Item</TableCell>
-                <TableCell>Quantity</TableCell>
+                <TableCell>Transaction ID</TableCell>
                 <TableCell>Total Paid</TableCell>
+                <TableCell>Remaining Amount</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -306,7 +306,7 @@ export default function StickyHeadTable() {
               {rows.map((payment) => {
                 let balanced =
                   payment.transaction_detail.total_paid ===
-                  payment.transaction_detail.total_payable;
+                  payment.transaction_detail.grand_total;
                 return (
                   <TableRow hover tabIndex={-1} key={payment.id}>
                     <TableCell>
@@ -317,15 +317,14 @@ export default function StickyHeadTable() {
                     <TableCell>
                       {payment.transaction_detail.vendor_client}
                     </TableCell>
-                    <TableCell>
-                      <ProductInfoDialog
-                        itemName={payment.transaction_detail.item_name}
-                        itemId={payment.transaction_detail.item}
-                      />
-                    </TableCell>
-                    <TableCell>{payment.transaction_detail.quantity}</TableCell>
+                    <TableCell>{payment.transaction}</TableCell>
                     <TableCell>
                       Rs. {payment.transaction_detail.total_paid}
+                    </TableCell>
+                    <TableCell>
+                      Rs.{" "}
+                      {payment.transaction_detail.grand_total -
+                        payment.transaction_detail.total_paid}
                     </TableCell>
                     <TableCell>
                       <Grid>

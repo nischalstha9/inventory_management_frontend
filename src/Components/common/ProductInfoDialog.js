@@ -60,7 +60,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs({ itemName, itemId }) {
+export default function ProductInfoDialog({ itemName, itemId }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [item, setItem] = React.useState(null);
@@ -107,7 +107,7 @@ export default function CustomizedDialogs({ itemName, itemId }) {
                     <ProductInfo item={item} />
                   </div>
                   <hr />
-                  {item.transactions.stock_in.length > 0 ? (
+                  {/* {item.transactions.stock_in.length > 0 ? (
                     <div className={classes.StockInTransTable}>
                       <h4>Stock In Unpaid Transaction</h4>
                       <hr />
@@ -118,9 +118,9 @@ export default function CustomizedDialogs({ itemName, itemId }) {
                     </div>
                   ) : (
                     ""
-                  )}
+                  )} */}
 
-                  {item.transactions.stock_out.length > 0 ? (
+                  {/* {item.transactions.stock_out.length > 0 ? (
                     <div className={classes.StockOutTransTable}>
                       <h4>Stock Out Unpaid Transaction</h4>
                       <hr />
@@ -131,7 +131,7 @@ export default function CustomizedDialogs({ itemName, itemId }) {
                     </div>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </>
               </Typography>
             ) : (

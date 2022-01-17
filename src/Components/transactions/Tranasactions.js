@@ -305,7 +305,6 @@ export default function StickyHeadTable() {
                   Search By Product or Vendor/Client:
                 </label>
                 <TextField
-                  placeHolder="Hp pavillion"
                   name="search"
                   onKeyUp={(e) => {
                     if (e.keyCode === 13) {
@@ -350,10 +349,7 @@ export default function StickyHeadTable() {
                 <TableCell>Date</TableCell>
                 <TableCell>Id</TableCell>
                 <TableCell>Vendor/Client</TableCell>
-                <TableCell>Item</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Price Per Unit</TableCell>
                 <TableCell>Total Payable</TableCell>
                 <TableCell>Total Paid</TableCell>
                 <TableCell>Remaining Payment</TableCell>
@@ -369,22 +365,14 @@ export default function StickyHeadTable() {
                 </TableRow>
               ) : (
                 rows.map((trans) => {
-                  let balanced = trans.total_payable - trans.total_paid === 0;
+                  let balanced = trans.grand_total - trans.total_paid === 0;
                   return (
                     <TableRow hover tabIndex={-1} key={trans.id}>
                       <TableCell>{trans.date_of_trans}</TableCell>
                       <TableCell>{trans.id}</TableCell>
                       <TableCell>{trans.vendor_client}</TableCell>
-                      <TableCell>
-                        <ProductInfoDialog
-                          itemName={trans.item_name}
-                          itemId={trans.item}
-                        />
-                      </TableCell>
                       <TableCell>{trans._type}</TableCell>
-                      <TableCell>{trans.quantity}</TableCell>
-                      <TableCell>Rs. {trans.cost}</TableCell>
-                      <TableCell>Rs. {trans.total_payable}</TableCell>
+                      <TableCell>Rs. {trans.grand_total}</TableCell>
                       <TableCell>Rs. {trans.total_paid}</TableCell>
                       <TableCell>
                         {balanced ? (
@@ -392,7 +380,7 @@ export default function StickyHeadTable() {
                         ) : (
                           <UnBalancedChip
                             label={`Rs. ${
-                              trans.total_payable - trans.total_paid
+                              trans.grand_total - trans.total_paid
                             }`}
                           />
                         )}

@@ -14,6 +14,7 @@ import { yellow, red } from "@material-ui/core/colors";
 import { Alert } from "@material-ui/lab";
 import { useParams } from "react-router-dom";
 import { jsPDF } from "jspdf";
+import TransactionProducts from "../common/TransactionProducts";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -112,7 +113,7 @@ export default function AddTransaction() {
     AxiosInstance.get(url)
       .then((resp) => {
         setTitle(
-          `Update Transaction | ${resp.data.quantity} of ${resp.data.item_name}`
+          `Update Transaction | ${resp.data.id} of ${resp.data.vendor_client} as on ${resp.data.date_of_trans}`
         );
         setChooseItem(resp.data);
         formik.setFieldValue("contact", resp.data.contact);
@@ -194,6 +195,10 @@ export default function AddTransaction() {
               <>
                 <div className={classes.productInfo}>
                   <TransactionInfoCard transaction={chooseItem} />
+                  <TransactionProducts
+                    transaction_items={chooseItem.transaction_items}
+                    grand_total={chooseItem.grand_total}
+                  />
                 </div>
                 <hr />
                 <div className={classes.productInfo}>
@@ -213,7 +218,7 @@ export default function AddTransaction() {
                     payments={chooseItem.payments}
                     totalPaid={chooseItem.total_paid}
                     remainingAmount={chooseItem.remaining_payment}
-                    totalPayable={chooseItem.total_payable}
+                    totalPayable={chooseItem.grand_total}
                   />
                   {chooseItem.remaining_payment !== 0 ? (
                     <CreatePayment

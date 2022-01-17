@@ -25,13 +25,13 @@ const ProductInfo = ({ transaction }) => {
           </li>
           <hr />
           <li>
-            <span className={classes.meta}>Payment for Item:</span>
+            <span className={classes.meta}>Payment for Transaction:</span>
             <br />
-            <span className={classes.meta}>Item Name:</span>
-            <span className={classes.metaValue}>{transaction.item_name}</span>
-            <br />
-            <span className={classes.meta}>Item ID:</span>
-            <span className={classes.metaValue}>{transaction.item}</span>
+            <span className={classes.meta}>Transaction Name:</span>
+            <span className={classes.metaValue}>
+              {transaction.id} of {transaction.vendor_client} as on{" "}
+              {transaction.date_of_trans}
+            </span>
           </li>
           <hr />
           <li>
@@ -51,15 +51,9 @@ const ProductInfo = ({ transaction }) => {
             <span className={classes.metaValue}>{transaction.contact}</span>
           </li>
           <li>
-            <span className={classes.meta}>Quantity:</span>
-            <span className={classes.metaValue}>
-              {transaction.quantity} units
-            </span>
-          </li>
-          <li>
             <span className={classes.meta}>Total Payable:</span>
             <span className={classes.metaValue}>
-              Rs. {transaction.total_payable}
+              Rs. {transaction.grand_total}
             </span>
           </li>
           <li>

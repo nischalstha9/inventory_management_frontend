@@ -49,9 +49,9 @@ const Shops = () => {
   };
   const history = useHistory();
 
-  const handleLoginAs = (name, slug) => {
+  const handleLoginAs = (name, slug, id) => {
     dispatch(set_role(1));
-    let shop = { name: name, slug: slug };
+    let shop = { name: name, slug: slug, id: id };
     dispatch(set_user_shop(shop));
     localStorage.setItem("role", 1);
     localStorage.setItem("shop_detail", JSON.stringify(shop));
@@ -133,7 +133,9 @@ const Shops = () => {
                             Edit
                           </Button>
                           <Button
-                            onClick={() => handleLoginAs(shop.title, shop.slug)}
+                            onClick={() =>
+                              handleLoginAs(shop.title, shop.slug, shop.id)
+                            }
                             variant="outlined"
                             color="primary"
                           >

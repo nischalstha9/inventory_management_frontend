@@ -195,6 +195,8 @@ export default function AddTransaction() {
               <>
                 <div className={classes.productInfo}>
                   <TransactionInfoCard transaction={chooseItem} />
+                  <hr />
+                  <h2>Item Details</h2>
                   <TransactionProducts
                     transaction_items={chooseItem.transaction_items}
                     grand_total={chooseItem.grand_total}

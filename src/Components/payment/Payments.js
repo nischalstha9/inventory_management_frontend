@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { Button, Select, TextField } from "@material-ui/core";
+import { Button, CircularProgress, Select, TextField } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { MenuItem } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
@@ -95,8 +95,10 @@ export default function StickyHeadTable() {
         setRows(resp.data.results);
         setdataCount(resp.data.count);
       })
-      .catch((err) => console.log(err.response));
-    setLoading(false);
+      .catch((err) => console.log(err.response))
+      .finally(() => {
+        setLoading(false);
+      });
   }, [url, filterForm]);
 
   const downloadTable = () => {
@@ -297,6 +299,7 @@ export default function StickyHeadTable() {
                 <TableCell>Type</TableCell>
                 <TableCell>Vendor/Client</TableCell>
                 <TableCell>Transaction ID</TableCell>
+                <TableCell>Amount</TableCell>
                 <TableCell>Total Paid</TableCell>
                 <TableCell>Remaining Amount</TableCell>
                 <TableCell>Actions</TableCell>
@@ -318,6 +321,7 @@ export default function StickyHeadTable() {
                       {payment.transaction_detail.vendor_client}
                     </TableCell>
                     <TableCell>{payment.transaction}</TableCell>
+                    <TableCell>Rs. {payment.amount}</TableCell>
                     <TableCell>
                       Rs. {payment.transaction_detail.total_paid}
                     </TableCell>
@@ -341,6 +345,15 @@ export default function StickyHeadTable() {
                   </TableRow>
                 );
               })}
+              {loading ? (
+                <TableRow hover tabIndex={-1}>
+                  <TableCell colspan={11}>
+                    <CircularProgress disableShrink />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <></>
+              )}
             </TableBody>
           </Table>
           <CustomTablePagination

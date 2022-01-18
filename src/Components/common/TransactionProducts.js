@@ -1,10 +1,23 @@
+import { Button } from "@material-ui/core";
 import React from "react";
+import { useState } from "react";
 import ProductInfoDialog from "./ProductInfoDialog";
-const TransactionProducts = ({ transaction_items, grand_total }) => {
+const TransactionProducts = ({
+  transaction_items,
+  grand_total,
+  action = false,
+  changeTransactions = undefined,
+}) => {
+  const [items, setItems] = useState(transaction_items);
+  const removeTransaction = (trans) => {
+    let newTransItems = transaction_items.filter(
+      (item) => item.id !== trans.id
+    );
+    setItems(newTransItems);
+    changeTransactions(newTransItems);
+  };
   return (
     <div>
-      <hr />
-      <h3>Item Details</h3>
       <table border="1" cellSpacing={1} className="transactionProductsTable">
         <thead>
           <tr>
@@ -13,30 +26,40 @@ const TransactionProducts = ({ transaction_items, grand_total }) => {
             <th>Quantity</th>
             <th>Price Per Unit</th>
             <th>Total</th>
+            {action === true ? <th>Action</th> : ""}
           </tr>
         </thead>
         <tbody>
-          {transaction_items.map((trans, index) => {
+          {items.map((item, index) => {
             return (
               <tr>
                 <td>{index + 1}</td>
                 <td>
                   <ProductInfoDialog
-                    itemName={trans.item_name}
-                    itemId={trans.item}
+                    itemName={item.item_name}
+                    itemId={item.item}
                   />
                 </td>
-                <td>{trans.units}</td>
-                <td>Rs. {trans.price}</td>
-                <td>{trans.price * trans.units}</td>
+                <td>{item.units}</td>
+                <td>Rs. {item.price}</td>
+                <td>{item.price * item.units}</td>
+                {action === true ? (
+                  <td>
+                    <Button onClick={() => removeTransaction(item)}>
+                      {" X "}
+                    </Button>
+                  </td>
+                ) : (
+                  ""
+                )}
               </tr>
             );
           })}
           <tr>
-            <td colspan={4}>
+            <td colSpan={4}>
               <b>Grand Total</b>
             </td>
-            <td>
+            <td colSpan={action === true ? 2 : 1}>
               <b>Rs. {grand_total}</b>
             </td>
           </tr>

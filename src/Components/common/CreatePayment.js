@@ -50,6 +50,8 @@ const CreatePayment = ({ transactionId, refreshTransactionData }) => {
   };
   return (
     <div>
+      <hr />
+      <h3>Add Payment</h3>
       <form action="" onSubmit={(e) => handleSubmit(e)}>
         <Grid container xs={12}>
           <Grid xs={6}>
@@ -61,7 +63,7 @@ const CreatePayment = ({ transactionId, refreshTransactionData }) => {
               margin="normal"
               required
               id="amount"
-              label="Add amount to transaction"
+              label="Add Payment"
               name="amount"
               type="number"
               onChange={(e) => handleChange(e)}
@@ -77,7 +79,7 @@ const CreatePayment = ({ transactionId, refreshTransactionData }) => {
               required
               fullWidth
               id="amount2"
-              label="Confirm amount to transaction"
+              label="Confirm Payment"
               name="amount2"
               type="number"
               onChange={(e) => handleChange(e)}

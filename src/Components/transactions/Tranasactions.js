@@ -142,8 +142,10 @@ export default function StickyHeadTable() {
         setRows(resp.data.results);
         setdataCount(resp.data.count);
       })
-      .catch((err) => console.log(err.response));
-    setLoading(false);
+      .catch((err) => console.log(err.response))
+      .finally(() => {
+        setLoading(false);
+      });
   }, [url, filterForm]);
 
   const handleChangePage = (event, newPage) => {
@@ -357,6 +359,40 @@ export default function StickyHeadTable() {
               </TableRow>
             </TableHead>
             <TableBody>
+              {rows.map((trans) => {
+                let balanced = trans.grand_total - trans.total_paid === 0;
+                return (
+                  <TableRow hover tabIndex={-1} key={trans.id}>
+                    <TableCell>{trans.date_of_trans}</TableCell>
+                    <TableCell>{trans.id}</TableCell>
+                    <TableCell>{trans.vendor_client}</TableCell>
+                    <TableCell>{trans._type}</TableCell>
+                    <TableCell>Rs. {trans.grand_total}</TableCell>
+                    <TableCell>Rs. {trans.total_paid}</TableCell>
+                    <TableCell>
+                      {balanced ? (
+                        <BalancedChip label="Balanced" />
+                      ) : (
+                        <UnBalancedChip
+                          label={`Rs. ${trans.grand_total - trans.total_paid}`}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Grid>
+                        <Grid>
+                          <ViewEditButton
+                            component={Link}
+                            to={`transactions/${trans.id}/update`}
+                          >
+                            View/Edit{balanced ? "" : "/Pay"}
+                          </ViewEditButton>
+                        </Grid>
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
               {loading ? (
                 <TableRow hover tabIndex={-1}>
                   <TableCell colspan={11}>
@@ -364,42 +400,12 @@ export default function StickyHeadTable() {
                   </TableCell>
                 </TableRow>
               ) : (
-                rows.map((trans) => {
-                  let balanced = trans.grand_total - trans.total_paid === 0;
-                  return (
-                    <TableRow hover tabIndex={-1} key={trans.id}>
-                      <TableCell>{trans.date_of_trans}</TableCell>
-                      <TableCell>{trans.id}</TableCell>
-                      <TableCell>{trans.vendor_client}</TableCell>
-                      <TableCell>{trans._type}</TableCell>
-                      <TableCell>Rs. {trans.grand_total}</TableCell>
-                      <TableCell>Rs. {trans.total_paid}</TableCell>
-                      <TableCell>
-                        {balanced ? (
-                          <BalancedChip label="Balanced" />
-                        ) : (
-                          <UnBalancedChip
-                            label={`Rs. ${
-                              trans.grand_total - trans.total_paid
-                            }`}
-                          />
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Grid>
-                          <Grid>
-                            <ViewEditButton
-                              component={Link}
-                              to={`transactions/${trans.id}/update`}
-                            >
-                              View/Edit{balanced ? "" : "/Pay"}
-                            </ViewEditButton>
-                          </Grid>
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                <></>
+                // <TableRow hover tabIndex={-1}>
+                //   <TableCell colspan={11}>
+                //     <CircularProgress disableShrink />
+                //   </TableCell>
+                // </TableRow>
               )}
             </TableBody>
           </Table>

@@ -4,14 +4,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import AxiosInstance from "../../AxiosInstance";
 import { useSelector } from "react-redux";
-import { Button, CircularProgress, TextField } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  TextField,
+  MenuItem,
+} from "@material-ui/core";
 import { Helmet } from "react-helmet";
-import { MenuItem } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import ProductInfo from "../common/ProductInfo";
 import ProductTransactions from "../common/ProductTransactions";
 import { yellow, red } from "@material-ui/core/colors";
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import { useHistory } from "react-router";
 import { location } from "url-parse";
 import TransactionProducts from "../common/TransactionProducts";
@@ -170,10 +174,11 @@ export default function AddTransaction({ mode }) {
     units: yup
       .number()
       .required("The number is required!")
+      .positive("Quantity cannot be less than 1!")
       .test(
         "Is valid",
-        "ERROR: The units number must be greater than 0 and less than available units!",
-        (value) => value > 0
+        `Only ${chooseItem.quantity} units avalilable for given item!`,
+        (value) => value <= chooseItem.quantity
       ),
     item: yup
       .number()
@@ -215,7 +220,6 @@ export default function AddTransaction({ mode }) {
     _type: mode,
     remarks: null,
     contact: null,
-    transaction_items: transactionItems,
     shop: shop_id,
   };
   const [formData, setFormData] = useState(initialFinalFormData);
@@ -227,37 +231,37 @@ export default function AddTransaction({ mode }) {
     }));
   };
   const createTransaction = () => {
-    console.log(formData);
-    // const url = `transactions/${shop_slug}/transaction/`;
-    // AxiosInstance.post(url, formData, {
-    //   withCredentials: true,
-    // })
-    //   .then((resp) => {
-    //     setSuccess(true);
-    //     // formik.resetForm();
-    //     // let msg = Object.entries(resp.data)[0][1];
-    //     setAlerts([
-    //       {
-    //         message: "Transaction Creation Success!",
-    //         type: "success",
-    //       },
-    //     ]);
-    //   })
-    //   .catch((err) => {
-    //     setSuccess(false);
-    //     let msg = Object.entries(err.response.data)[0][1];
-    //     setAlerts([
-    //       {
-    //         message: msg,
-    //         type: "error",
-    //       },
-    //     ]);
-    //   })
-    //   .finally(() => {
-    //     setProcessing(false);
-    //     // setFormData(initialFinalFormData);
-    //     // setTransactionItems([]);
-    //   });
+    formData.transaction_items = transactionItems;
+    const url = `transactions/${shop_slug}/transaction/`;
+    AxiosInstance.post(url, formData, {
+      withCredentials: true,
+    })
+      .then((resp) => {
+        setSuccess(true);
+        // formik.resetForm();
+        // let msg = Object.entries(resp.data)[0][1];
+        setAlerts([
+          {
+            message: "Transaction Creation Success!",
+            type: "success",
+          },
+        ]);
+      })
+      .catch((err) => {
+        setSuccess(false);
+        let msg = Object.entries(err.response.data)[0][1];
+        setAlerts([
+          {
+            message: msg,
+            type: "error",
+          },
+        ]);
+      })
+      .finally(() => {
+        setProcessing(false);
+        // setFormData(initialFinalFormData);
+        // setTransactionItems([]);
+      });
   };
   if (mode !== "STOCK_IN" && mode !== "STOCK_OUT") {
     return <h1>INVALID MODE</h1>;
@@ -271,7 +275,7 @@ export default function AddTransaction({ mode }) {
         <h1>{title}</h1>
         <hr />
         <div className={classes.section}>
-          <div className={classes.infoSection}>
+          <div className={classes.formSection}>
             {chooseItem === {} ? (
               "Choose Product to see it's details."
             ) : loading ? (
@@ -282,32 +286,135 @@ export default function AddTransaction({ mode }) {
                   <ProductInfo item={chooseItem} />
                 </div>
                 <hr />
-                {/* {chooseItem.transactions.stock_in.length > 0 ? (
-                  <div className={classes.StockInTransTable}>
-                    <h4>Stock In Unpaid Transaction</h4>
-                    <hr />
-                    <ProductTransactions
-                      transactions={chooseItem.transactions.stock_in}
-                      type="STOCK_IN"
-                    />
-                  </div>
-                ) : (
-                  ""
-                )}
-                {chooseItem.transactions.stock_out.length > 0 ? (
-                  <div className={classes.StockOutTransTable}>
-                    <h4>Stock Out Unpaid Transaction</h4>
-                    <hr />
-                    <ProductTransactions
-                      transactions={chooseItem.transactions.stock_out}
-                      type="STOCK_OUT"
-                    />
-                  </div>
-                ) : (
-                  ""
-                )} */}
               </>
             )}
+            <form className={classes.form} onSubmit={formik.handleSubmit}>
+              <Autocomplete
+                id="item"
+                name="item"
+                type="number"
+                options={items}
+                getOptionLabel={(option) => option.name}
+                autoComplete
+                autoSelect
+                autoHighlight
+                disableClearable={true}
+                style={{ width: "100%" }}
+                onChange={(e, newValue) => {
+                  formik.setFieldValue("item", newValue.id);
+                  retrieveItemDetail(newValue.id);
+                  updateQuery("product", newValue.id);
+                  formik.setFieldValue("item_name", newValue.name);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Product"
+                    error={formik.touched.item && Boolean(formik.errors.item)}
+                    helperText={formik.touched.item && formik.errors.item}
+                  />
+                )}
+              />
+              {/* <TextField
+                autoFocus
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="item"
+                name="item"
+                type="number"
+                select
+                onChange={(e) => {
+                  retrieveItemDetail(e.target.value);
+                  updateQuery("product", e.target.value);
+                  formik.setFieldValue("item_name", chooseItem.name);
+                  formik.handleChange(e);
+                }}
+                error={formik.touched.item && Boolean(formik.errors.item)}
+                helperText={formik.touched.item && formik.errors.item}
+                value={formik.values.item}
+                label="Product"
+              >
+                {items.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </TextField> */}
+              <TextField
+                autoFocus
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="units"
+                name="units"
+                type="number"
+                onChange={formik.handleChange}
+                error={formik.touched.units && Boolean(formik.errors.units)}
+                helperText={formik.touched.units && formik.errors.units}
+                value={formik.values.units}
+                label="Units"
+              />
+              <TextField
+                autoFocus
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="price"
+                name="price"
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                value={formik.values.price}
+                label="Price"
+              />
+              {mode === "STOCK_IN" ? (
+                <TextField
+                  autoFocus
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="selling_price"
+                  name="selling_price"
+                  onChange={formik.handleChange}
+                  value={formik.values.selling_price}
+                  label="Selling Price"
+                />
+              ) : (
+                ""
+              )}
+              <div className={classes.buttonWrapper}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  disabled={processing}
+                  className={classes.submit}
+                >
+                  + Add to table
+                </Button>
+                {processing && (
+                  <CircularProgress
+                    size={24}
+                    className={classes.buttonProgress}
+                  />
+                )}
+              </div>
+            </form>
+            {alerts.map((alert) => {
+              return (
+                <Alert severity={alert.type} key={alert.message}>
+                  {alert.message}
+                </Alert>
+              );
+            })}
+          </div>
+          <div className={classes.infoSection}>
             <div>
               <h2>Item Table</h2>
               <TransactionProducts
@@ -381,110 +488,6 @@ export default function AddTransaction({ mode }) {
                 Create Transaction
               </Button>
             </div>
-          </div>
-          <div className={classes.formSection}>
-            <form className={classes.form} onSubmit={formik.handleSubmit}>
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="item"
-                name="item"
-                type="number"
-                select
-                onChange={(e) => {
-                  retrieveItemDetail(e.target.value);
-                  updateQuery("product", e.target.value);
-                  formik.setFieldValue("item_name", chooseItem.name);
-                  formik.handleChange(e);
-                }}
-                error={formik.touched.item && Boolean(formik.errors.item)}
-                helperText={formik.touched.item && formik.errors.item}
-                value={formik.values.item}
-                label="Product"
-              >
-                {items.map((item) => (
-                  <MenuItem
-                    key={item.id}
-                    value={item.id}
-                    data-itemName={item.item_name}
-                  >
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="units"
-                name="units"
-                type="number"
-                onChange={formik.handleChange}
-                error={formik.touched.units && Boolean(formik.errors.units)}
-                helperText={formik.touched.units && formik.errors.units}
-                value={formik.values.units}
-                label="Units"
-              />
-              <TextField
-                autoFocus
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="price"
-                name="price"
-                onChange={(e) => {
-                  formik.handleChange(e);
-                }}
-                value={formik.values.price}
-                label="Price"
-              />
-              {mode === "STOCK_IN" ? (
-                <TextField
-                  autoFocus
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="selling_price"
-                  name="selling_price"
-                  onChange={formik.handleChange}
-                  value={formik.values.selling_price}
-                  label="Selling Price"
-                />
-              ) : (
-                ""
-              )}
-              <div className={classes.buttonWrapper}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  disabled={processing}
-                  className={classes.submit}
-                >
-                  + Add to table
-                </Button>
-                {processing && (
-                  <CircularProgress
-                    size={24}
-                    className={classes.buttonProgress}
-                  />
-                )}
-              </div>
-            </form>
-            {alerts.map((alert) => {
-              return (
-                <Alert severity={alert.type} key={alert.message}>
-                  {alert.message}
-                </Alert>
-              );
-            })}
           </div>
         </div>
       </Paper>

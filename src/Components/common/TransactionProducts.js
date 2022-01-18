@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 import ProductInfoDialog from "./ProductInfoDialog";
+import { UnBalancedChip } from "../transactions/Tranasactions";
 const TransactionProducts = ({
   transaction_items,
   grand_total,
@@ -11,7 +12,7 @@ const TransactionProducts = ({
   const [items, setItems] = useState(transaction_items);
   const removeTransaction = (trans) => {
     let newTransItems = transaction_items.filter(
-      (item) => item.id !== trans.id
+      (item) => item.item !== trans.item
     );
     setItems(newTransItems);
     changeTransactions(newTransItems);
@@ -45,9 +46,10 @@ const TransactionProducts = ({
                 <td>{item.price * item.units}</td>
                 {action === true ? (
                   <td>
-                    <Button onClick={() => removeTransaction(item)}>
-                      {" X "}
-                    </Button>
+                    <UnBalancedChip
+                      onClick={() => removeTransaction(item)}
+                      label={" - "}
+                    />
                   </td>
                 ) : (
                   ""
@@ -59,7 +61,7 @@ const TransactionProducts = ({
             <td colSpan={4}>
               <b>Grand Total</b>
             </td>
-            <td colSpan={action === true ? 2 : 1}>
+            <td>
               <b>Rs. {grand_total}</b>
             </td>
           </tr>

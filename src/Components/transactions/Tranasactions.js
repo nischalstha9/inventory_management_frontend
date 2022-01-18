@@ -35,7 +35,7 @@ export const UnBalancedChip = withStyles({
   root: {
     background: "#b73b3b",
     color: "white",
-    width: "100%",
+    minWidth: "100%",
   },
   label: {
     textTransform: "capitalize",
